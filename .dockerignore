@@ -1,0 +1,57 @@
+# Keep the build context lean: skip everything we don't need to copy into the image.
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+
+# Docker itself
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Docs / misc
+README.md
+LICENSE
+*.md
+
+# Build output
+**/bin/
+**/obj/
+**/out/
+**/publish/
+**/[Dd]ebug/
+**/[Rr]elease/
+
+# Node (if any front-end tooling is added later)
+**/node_modules/
+**/npm-debug.log
+**/yarn-error.log
+
+# Umbraco runtime artefacts that must never be baked into the image
+Brand.Web/umbraco/Data/TEMP/
+Brand.Web/umbraco/Data/CreatedPackages/
+Brand.Web/umbraco/Data/*.sqlite.db
+Brand.Web/umbraco/Data/*.sqlite.db-shm
+Brand.Web/umbraco/Data/*.sqlite.db-wal
+Brand.Web/umbraco/Logs/
+Brand.Web/wwwroot/media/
+
+# JSON schemas regenerated on each build
+Brand.Web/appsettings-schema.json
+Brand.Web/appsettings-schema.*.json
+Brand.Web/umbraco-package-schema.json
+
+# Tooling (host-only, never needed inside the image)
+.mise.toml
+.mise.local.toml
+.config/
+docker-compose*.yml

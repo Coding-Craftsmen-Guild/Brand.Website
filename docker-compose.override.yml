@@ -1,0 +1,14 @@
+services:
+  web:
+    build:
+      target: dev
+    image: brand.web:dev
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      DOTNET_USE_POLLING_FILE_WATCHER: "1"
+    volumes:
+      - ./Brand.Web:/src/Brand.Web
+      - ./data:/src/Brand.Web/umbraco/Data
+      - umbraco-logs:/src/Brand.Web/umbraco/Logs
+      - umbraco-media:/src/Brand.Web/wwwroot/media
+    command: ["dotnet", "watch", "--non-interactive", "--project", "Brand.Web/Brand.Web.csproj", "run", "--no-launch-profile"]

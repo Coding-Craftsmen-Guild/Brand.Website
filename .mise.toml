@@ -1,0 +1,65 @@
+[tools]
+dotnet = "10.0.300"
+node = "22"
+
+[env]
+DOTNET_CLI_TELEMETRY_OPTOUT = "1"
+DOTNET_NOLOGO = "1"
+ASPNETCORE_ENVIRONMENT = "Development"
+
+[tasks.setup]
+description = "Install local .NET tools (csharpier, etc.) — run once after `mise install`."
+run = "dotnet tool restore"
+
+[tasks.restore]
+description = "Restore NuGet packages for Brand.Web."
+run = "dotnet restore Brand.Web/Brand.Web.csproj"
+
+[tasks.build]
+description = "Debug build."
+run = "dotnet build Brand.Web/Brand.Web.csproj"
+depends = ["restore"]
+
+[tasks.dev]
+description = "Run Umbraco locally with hot reload (host-native, fastest iteration)."
+run = "dotnet watch --project Brand.Web/Brand.Web.csproj"
+
+[tasks.run]
+description = "Run Umbraco without watch."
+run = "dotnet run --project Brand.Web/Brand.Web.csproj"
+
+[tasks.format]
+description = "Format C# with csharpier."
+run = "dotnet csharpier format ."
+
+[tasks."format:check"]
+description = "Verify formatting without writing changes."
+run = "dotnet csharpier check ."
+
+[tasks.clean]
+description = "Remove build artifacts."
+run = "dotnet clean Brand.Web/Brand.Web.csproj"
+
+[tasks."docker:build"]
+description = "Build the production image."
+run = "docker build --target runtime -t brand.web:latest ."
+
+[tasks."docker:build-dev"]
+description = "Build the dev image (dotnet watch)."
+run = "docker build --target dev -t brand.web:dev ."
+
+[tasks."docker:up"]
+description = "Start the stack (compose picks up override.yml automatically in dev)."
+run = "docker compose up --build"
+
+[tasks."docker:down"]
+description = "Stop the stack and remove containers."
+run = "docker compose down"
+
+[tasks."docker:logs"]
+description = "Tail container logs."
+run = "docker compose logs -f web"
+
+[tasks.rename-project]
+description = "Rename the 'Project' placeholder to a real name (Brand.Web -> <NewName>.Web). Usage: mise run rename-project <NewName>"
+run = "bash tools/rename-project.sh"

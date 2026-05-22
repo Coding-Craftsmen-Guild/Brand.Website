@@ -1,0 +1,20 @@
+services:
+  web:
+    build:
+      context: .
+      target: runtime
+    image: brand.web:latest
+    ports:
+      - "28080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+    volumes:
+      - ./data:/app/umbraco/Data
+      - umbraco-logs:/app/umbraco/Logs
+      - umbraco-media:/app/wwwroot/media
+    restart: unless-stopped
+
+volumes:
+  umbraco-logs:
+  umbraco-media:
