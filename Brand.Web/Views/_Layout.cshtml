@@ -1,0 +1,17 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+<!DOCTYPE html>
+<html lang="@(System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName)">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta-fields></meta-fields>
+    <render-script position="HeadBottom"></render-script>
+</head>
+<body>
+    <render-script position="BodyTop"></render-script>
+
+    @RenderBody()
+
+    <render-script position="BodyBottom"></render-script>
+</body>
+</html>

@@ -63,3 +63,7 @@ run = "docker compose logs -f web"
 [tasks.rename-project]
 description = "Rename the 'Project' placeholder to a real name (Brand.Web -> <NewName>.Web). Usage: mise run rename-project <NewName>"
 run = "bash tools/rename-project.sh"
+
+[tasks."usync:bundle"]
+description = "Bundle code-first DocumentType + Dictionary sources into Brand.Web/uSync/v17/. STUB until sibling source layout is defined."
+run = "bash tools/usync-bundle.sh"

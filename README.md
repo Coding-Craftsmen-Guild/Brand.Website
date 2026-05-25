@@ -14,7 +14,7 @@ mise run setup      # restores .NET local tools (csharpier)
 mise run dev        # host-native: dotnet watch on Brand.Web
 # - or -
 mise run docker:up  # containerised: dev image with dotnet watch, http://localhost:28080
-```
+```s
 
 First boot lands you in the Umbraco install wizard. The unattended-upgrade flag is on, so subsequent boots auto-apply migrations.
 
