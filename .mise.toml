@@ -71,3 +71,13 @@ run_windows = 'C:\PROGRA~1\Git\bin\bash.exe tools/rename-project.sh'
 description = "Flat-copy all *.config under Brand.Core/{Components,Compositions,Pages} into Brand.Web/uSync/v17/ContentTypes/ so uSync's startup import can apply them."
 run = "bash tools/usync-bundle.sh"
 run_windows = 'C:\PROGRA~1\Git\bin\bash.exe tools/usync-bundle.sh'
+
+[tasks."skills:sync"]
+description = "Pull Claude skills & agents from upstream repos listed in tools/skills-sources.json into .claude/."
+run = "bash tools/sync-skills.sh"
+run_windows = 'C:\PROGRA~1\Git\bin\bash.exe tools/sync-skills.sh'
+
+[tasks."skills:check"]
+description = "Dry-run skills:sync — exits non-zero if any upstream change is pending. Useful in pre-commit/CI."
+run = "bash tools/sync-skills.sh --check"
+run_windows = 'C:\PROGRA~1\Git\bin\bash.exe tools/sync-skills.sh --check'
