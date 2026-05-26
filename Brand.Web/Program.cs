@@ -1,8 +1,14 @@
+using Microsoft.AspNetCore.Mvc.Razor;
 using OpenIddict.Server.AspNetCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.CreateUmbracoBuilder().AddBackOffice().AddWebsite().AddComposers().Build();
+
+builder.Services.Configure<RazorViewEngineOptions>(o =>
+{
+    o.ViewLocationExpanders.Add(new Brand.Web.ViewLocations.DoctypeFolderViewLocationExpander());
+});
 
 if (builder.Environment.IsDevelopment())
 {

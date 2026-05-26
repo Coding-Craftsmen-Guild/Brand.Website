@@ -12,7 +12,17 @@ These are the conventions for working in this repo. Follow them by default; devi
 
 - Format C# with csharpier: `mise run format`. CI gate is `mise run format:check`.
 - No comments unless the *why* is non-obvious. Don't restate what the code already says.
+- Nullable reference types are **disabled** in every project (`<Nullable>disable</Nullable>`). Don't write `?` on reference type declarations (parameters, properties, return types, fields). Value type `?` (e.g., `int?`, `DateTime?`) is fine — that's `Nullable<T>`, not the reference-type annotation. If a new project is added, set `<Nullable>disable</Nullable>` to match.
 - `Brand.Web` and `brand.web` are placeholder names. To rename, use `mise run rename-project <NewName>` — never hand-edit folder/csproj names.
+
+## Skills
+
+Specialised skills auto-load for Umbraco work. The model picks by description; this index is for humans:
+
+- [usync-author](.claude/skills/usync-author/SKILL.md) — code-first DocumentType `.config` mechanics, GUID uniqueness, rename round-trip, bundler.
+- [umbraco-viewcomponent](.claude/skills/umbraco-viewcomponent/SKILL.md) — Razor render: co-located ViewComponent + ViewModel record, namespace-shadow workaround, partial discovery.
+- [umbraco-datatypes](.claude/skills/umbraco-datatypes/SKILL.md) — picking/creating DataTypes; index of the editors tracked under `Brand.Web/uSync/v17/DataTypes/`.
+- [umbraco-blocks](.claude/skills/umbraco-blocks/SKILL.md) — Block List/Grid/single composition from IsElement doctypes, dispatch through `Brand.Web/Views/Partials/`.
 
 ## Database
 
@@ -38,12 +48,13 @@ These are the conventions for working in this repo. Follow them by default; devi
 - `UpgradeUnattended` is on, so migrations apply on boot.
 - Razor compile-on-build/publish is disabled by design (see comment in the csproj). Don't re-enable without understanding the InMemoryAuto ModelsMode implication.
 - Generated schema files (`appsettings-schema*.json`, `umbraco-package-schema.json`) are gitignored — they regenerate on build.
+- **ModelsBuilder-generated files (`Brand.Core/Generated/*.generated.cs`) are off-limits**. Never rename, move, or hand-edit them. They're owned by the generator — overwritten on every regen (SourceCodeAuto runs on every doctype save in dev). They are tracked in git (no gitignore) so PRs show the model deltas. If a doctype rename breaks compile transiently, fix it by changing the source `.config` and waiting for MB to regen — don't shortcut by editing the generated file.
 
 ## uSync
 
 uSync folder is `Brand.Web/uSync/v17/`. Behaviour splits by environment.
 
-- **Dev** ([appsettings.Development.json](Brand.Web/appsettings.Development.json)): `ImportAtStartup: "All"` + `ExportOnSave: "Settings"`. `ContentHandler` and `MediaHandler` are disabled. `ContentTypeHandler` and `DictionaryHandler` are set to `Actions: "Import"` — they apply on startup but never write back, because doctypes and dictionary entries are code-first (authored in source, bundled into the folder by a build step — pattern TBD). Don't re-enable content/media in dev.
+- **Dev** ([appsettings.Development.json](Brand.Web/appsettings.Development.json)): `ImportAtStartup: "All"` + `ExportOnSave: "Settings"`. `ContentHandler` and `MediaHandler` are disabled. `ContentTypeHandler` and `DictionaryHandler` are set to `Actions: "Import"` — they apply on startup but never write back, because doctypes and dictionary entries are code-first (authored in source under [Brand.Core/](Brand.Core/), bundled into the folder via `mise run usync:bundle`). Don't re-enable content/media in dev.
 - **Prod** ([appsettings.json](Brand.Web/appsettings.json)): `ImportAtStartup: "None"` + `ExportOnSave: "All"`. Every backoffice save (content, media, dictionary, schema) writes to disk. Operator triggers import manually after each deploy.
 
 Tracked vs gitignored in `Brand.Web/uSync/v17/`:
@@ -51,9 +62,9 @@ Tracked vs gitignored in `Brand.Web/uSync/v17/`:
 - Gitignored: `ContentTypes/` (DocumentTypes — code-first), `Dictionary/` (code-first starting items).
 
 Code-first authoring:
-- Use the `usync-author` skill at [.claude/skills/usync-author/SKILL.md](.claude/skills/usync-author/SKILL.md). It enforces a mandatory GUID-uniqueness check before assigning any `Key` to a new DocumentType or Dictionary entry.
-- Source files live in a sibling folder under `Brand.Web/` — **layout TBD**. Once decided, set `SOURCE_ROOT` in [tools/usync-bundle.sh](tools/usync-bundle.sh) and document the layout in the skill.
-- `mise run usync:bundle` merges sources into `Brand.Web/uSync/v17/{ContentTypes,Dictionary}/`. Currently a stub — exits non-zero with instructions until the layout is defined.
+- Use the [usync-author skill](.claude/skills/usync-author/SKILL.md). It enforces a mandatory GUID-uniqueness check before assigning any `Key` to a new DocumentType or Dictionary entry.
+- Source files live under [Brand.Core/](Brand.Core/) organised as `{Components,Compositions,Pages}/<Name>/<name>.config` — see the [usync-author skill](.claude/skills/usync-author/SKILL.md) for the layout rules.
+- `mise run usync:bundle` ([tools/usync-bundle.sh](tools/usync-bundle.sh)) wipes `Brand.Web/uSync/v17/ContentTypes/` and flat-copies every `*.config` under `Brand.Core/` into it (so source deletes propagate). Run after every doctype change. Dictionary bundling is not implemented yet — see `## Open questions`.
 
 Prod capture volume: `docker-compose.yml` bind-mounts `./usync:/app/uSync`, so prod runtime captures persist on the host and are inspectable. The folder is gitignored as `/usync/`.
 
@@ -70,3 +81,7 @@ Prod capture volume: `docker-compose.yml` bind-mounts `./usync:/app/uSync`, so p
 - `Brand.Web/uSync/v17/ContentTypes/` and `Brand.Web/uSync/v17/Dictionary/` — code-first artifacts
 - `/usync/` — prod uSync runtime capture volume
 - Secrets of any kind. There are no env-var files checked in; add them to `.mise.local.toml` (gitignored) if you need per-developer overrides.
+
+## Open questions
+
+- **Dictionary i18n source layout.** Code-first per `## uSync`, but the `Brand.Core/` subfolder convention and bundler mapping into `Brand.Web/uSync/v17/Dictionary/` aren't decided. Resolve when the first real dictionary entry is needed. Extend [tools/usync-bundle.sh](tools/usync-bundle.sh) and the [usync-author skill](.claude/skills/usync-author/SKILL.md) at the same time.

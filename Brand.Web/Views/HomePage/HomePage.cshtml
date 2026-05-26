@@ -1,0 +1,14 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<HomePage>
+@{
+    Layout = "_Layout";
+}
+
+<h1>@Model.Title</h1>
+
+@if (Model.Components?.Any() == true)
+{
+    foreach (var block in Model.Components)
+    {
+        @await Component.InvokeAsync(block.Content.ContentType.Alias, new { source = block.Content })
+    }
+}

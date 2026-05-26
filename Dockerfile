@@ -22,10 +22,13 @@ FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS build
 WORKDIR /src
 
 # Restore layer caches on csproj + central package props only.
-COPY Brand.Web/Brand.Web.csproj Brand.Web/Directory.Packages.props ./Brand.Web/
+COPY Directory.Packages.props ./
+COPY Brand.Web/Brand.Web.csproj ./Brand.Web/
+COPY Brand.Core/Brand.Core.csproj ./Brand.Core/
 RUN dotnet restore Brand.Web/Brand.Web.csproj
 
 COPY Brand.Web/ ./Brand.Web/
+COPY Brand.Core/ ./Brand.Core/
 RUN dotnet publish Brand.Web/Brand.Web.csproj \
     -c Release \
     -o /app/publish \

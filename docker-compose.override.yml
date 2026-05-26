@@ -10,6 +10,10 @@ services:
       - ./Brand.Web:/src/Brand.Web
       - /src/Brand.Web/obj
       - /src/Brand.Web/bin
+      - ./Brand.Core:/src/Brand.Core
+      - /src/Brand.Core/obj
+      - /src/Brand.Core/bin
+      - ./Directory.Packages.props:/src/Directory.Packages.props
       - ./data:/src/Brand.Web/umbraco/Data
       - umbraco-logs:/src/Brand.Web/umbraco/Logs
       - umbraco-media:/src/Brand.Web/wwwroot/media

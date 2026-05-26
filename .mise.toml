@@ -21,12 +21,14 @@ run = "dotnet build Brand.Web/Brand.Web.csproj"
 depends = ["restore"]
 
 [tasks.dev]
-description = "Run Umbraco locally with hot reload (host-native, fastest iteration)."
+description = "Run Umbraco locally with hot reload (host-native, fastest iteration). Bundles code-first uSync sources first."
 run = "dotnet watch --project Brand.Web/Brand.Web.csproj"
+depends = ["usync:bundle"]
 
 [tasks.run]
-description = "Run Umbraco without watch."
+description = "Run Umbraco without watch. Bundles code-first uSync sources first."
 run = "dotnet run --project Brand.Web/Brand.Web.csproj"
+depends = ["usync:bundle"]
 
 [tasks.format]
 description = "Format C# with csharpier."
@@ -63,7 +65,9 @@ run = "docker compose logs -f web"
 [tasks.rename-project]
 description = "Rename the 'Project' placeholder to a real name (Brand.Web -> <NewName>.Web). Usage: mise run rename-project <NewName>"
 run = "bash tools/rename-project.sh"
+run_windows = 'C:\PROGRA~1\Git\bin\bash.exe tools/rename-project.sh'
 
 [tasks."usync:bundle"]
-description = "Bundle code-first DocumentType + Dictionary sources into Brand.Web/uSync/v17/. STUB until sibling source layout is defined."
+description = "Flat-copy all *.config under Brand.Core/{Components,Compositions,Pages} into Brand.Web/uSync/v17/ContentTypes/ so uSync's startup import can apply them."
 run = "bash tools/usync-bundle.sh"
+run_windows = 'C:\PROGRA~1\Git\bin\bash.exe tools/usync-bundle.sh'

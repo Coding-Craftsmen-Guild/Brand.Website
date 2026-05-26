@@ -1,4 +1,8 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@inject Umbraco.Cms.Core.Web.IUmbracoContextAccessor UmbracoContextAccessor
+@{
+    var siteRoot = UmbracoContextAccessor.GetRequiredUmbracoContext().Content?.GetAtRoot().FirstOrDefault();
+}
 <!DOCTYPE html>
 <html lang="@(System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName)">
 <head>
@@ -10,7 +14,17 @@
 <body>
     <render-script position="BodyTop"></render-script>
 
+    @if (siteRoot is IHeader headerSource)
+    {
+        @await Component.InvokeAsync("Header", new { source = headerSource })
+    }
+
     @RenderBody()
+
+    @if (siteRoot is IFooter footerSource)
+    {
+        @await Component.InvokeAsync("Footer", new { source = footerSource })
+    }
 
     <render-script position="BodyBottom"></render-script>
 </body>
