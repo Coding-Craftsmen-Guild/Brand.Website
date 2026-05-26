@@ -1,31 +1,22 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
-@inject Umbraco.Cms.Core.Web.IUmbracoContextAccessor UmbracoContextAccessor
-@{
-    var siteRoot = UmbracoContextAccessor.GetRequiredUmbracoContext().Content?.GetAtRoot().FirstOrDefault();
-}
 <!DOCTYPE html>
-<html lang="@(System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName)">
+<html lang="@Model.GetCultureFromDomains()">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta-fields></meta-fields>
     <render-script position="HeadBottom"></render-script>
 </head>
+
 <body>
     <render-script position="BodyTop"></render-script>
-
-    @if (siteRoot is IHeader headerSource)
-    {
-        @await Component.InvokeAsync("Header", new { source = headerSource })
-    }
+    @await Component.InvokeAsync("Header")
 
     @RenderBody()
 
-    @if (siteRoot is IFooter footerSource)
-    {
-        @await Component.InvokeAsync("Footer", new { source = footerSource })
-    }
-
+    @await Component.InvokeAsync("Footer")
     <render-script position="BodyBottom"></render-script>
 </body>
+
 </html>
