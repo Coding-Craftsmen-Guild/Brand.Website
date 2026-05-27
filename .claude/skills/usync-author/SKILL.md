@@ -1,6 +1,6 @@
 ---
 name: usync-author
-description: Author or modify code-first Umbraco DocumentTypes (ContentTypes) and Dictionary entries. Source files live under Brand.Core/{Components,Compositions,Pages} and bundle into Brand.Web/uSync/v17/. Enforces GUID uniqueness across the repo before assigning a key. Use when adding a new DocumentType or Dictionary entry, renaming one, or editing the schema of an existing code-first item.
+description: Author or modify code-first Umbraco DocumentTypes (ContentTypes) and Dictionary entries. Source files live under Brand.Core/{Components,Compositions,Shared,Pages} and bundle into Brand.Web/uSync/v17/. Enforces GUID uniqueness across the repo before assigning a key. Use when adding a new DocumentType or Dictionary entry, renaming one, or editing the schema of an existing code-first item. Out of scope: pure-UI components under Brand.Core/Components/UI/ — see the [component-developer](../component-developer/SKILL.md) skill.
 ---
 
 # usync-author
@@ -13,11 +13,17 @@ DocumentType `.config` files live in `Brand.Core/`, organised by feature:
 
 ```
 Brand.Core/
-├── Components/      # IsElement=true types (block list items, etc.)
-│   └── HomePage/    # grouped by the page that uses them
+├── Components/
+│   ├── UI/          # PURE UI — no .config, out of scope for this skill
+│   │   └── Button/  #   (see the component-developer skill)
+│   └── HomePage/    # IsElement=true types scoped to one page
 │       └── HeroBanner/
 │           ├── herobannercomponent.config       <- uSync source
 │           └── HeroBannerViewComponent.cs       <- optional ViewComponent + ViewModel
+├── Shared/          # IsElement=true types reusable across multiple pages
+│   └── <Name>/
+│       ├── <name>.config
+│       └── <Name>ViewComponent.cs
 ├── Compositions/    # IsElement=false reusable types (Header, Footer, GlobalSettings...)
 │   ├── Header/
 │   │   ├── header.config
@@ -33,6 +39,8 @@ Brand.Core/
     └── Page/
         └── page.config
 ```
+
+The choice between `Components/<Page>/<Name>/`, `Shared/<Name>/`, `Compositions/<Name>/` and `Components/UI/<Name>/` is owned by the [component-developer](../component-developer/SKILL.md) skill — it walks the user through the decision tree. This skill is invoked once the bucket is already chosen.
 
 Rules:
 - One folder per doctype. Folder name in PascalCase; matches the human concept (e.g. `HeroBanner`), not the uSync alias.
@@ -109,13 +117,15 @@ A duplicate `Key` across uSync items causes silent overwrites on import. **Befor
 ## Scope
 
 In scope:
-- `Brand.Core/Components/**/*.config` — element types
-- `Brand.Core/Compositions/**/*.config` — reusable mixins
+- `Brand.Core/Components/<Page>/**/*.config` — page-scoped element types (excluding `Components/UI/`)
+- `Brand.Core/Shared/**/*.config` — cross-page reusable element types
+- `Brand.Core/Compositions/**/*.config` — site-wide mixins
 - `Brand.Core/Pages/**/*.config` — page types
 
-**Out of scope** (use the Umbraco backoffice, let uSync auto-export to `Brand.Web/uSync/v17/<handler>/`):
-- DataTypes, Languages, MediaTypes, MemberTypes, RelationTypes, Templates — backoffice-driven, source-tracked.
-- Backoffice DocumentType experimentation — if you want a doctype quickly, create it in backoffice and use the dashboard's manual Export to inspect the `.config`. Move the file into `Brand.Core/<category>/<name>/` to make it the source of truth, then delete the backoffice version + re-bundle.
+**Out of scope**:
+- `Brand.Core/Components/UI/**` — pure UI ViewComponents with no `.config`. Handled by [umbraco-viewcomponent](../umbraco-viewcomponent/SKILL.md) directly; orchestrated by [component-developer](../component-developer/SKILL.md).
+- DataTypes, Languages, MediaTypes, MemberTypes, RelationTypes, Templates — backoffice-driven, source-tracked. Let uSync auto-export to `Brand.Web/uSync/v17/<handler>/`.
+- Backoffice DocumentType experimentation — if you want a doctype quickly, create it in backoffice and use the dashboard's manual Export to inspect the `.config`. Move the file into `Brand.Core/<bucket>/<name>/` to make it the source of truth, then delete the backoffice version + re-bundle.
 
 ## See also
 
@@ -128,8 +138,8 @@ Dictionary i18n layout is still open — see `## Open questions` in [CLAUDE.md](
 ## When to invoke this skill
 
 - User asks to add, rename, or delete a DocumentType.
-- User is editing a `.config` under `Brand.Core/{Components,Compositions,Pages}/`.
-- User asks about doctype organisation, the bundler, or where a new doctype should live.
+- User is editing a `.config` under `Brand.Core/{Components,Compositions,Shared,Pages}/`.
+- User asks about doctype organisation, the bundler, or where a new doctype should live. For new components, prefer routing through [component-developer](../component-developer/SKILL.md) first so the bucket is chosen deliberately.
 
 ## When NOT to invoke this skill
 

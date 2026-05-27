@@ -1,15 +1,15 @@
 ---
 name: umbraco-viewcomponent
-description: Author Razor render code for Umbraco DocumentTypes — co-located ViewComponent + ViewModel record under Brand.Core/{Components,Compositions}/, the Models.X namespace-shadow workaround, the Compositions-take-interface rule, and where to put the Default.cshtml partial. Use when adding a render path for a doctype, mapping a generated PublishedContentModel to a strongly-typed view, or wiring block-list items into ViewComponent dispatch.
+description: Author Razor render code for Umbraco DocumentTypes AND pure-UI ViewComponents — co-located ViewComponent + ViewModel record under Brand.Core/{Components,Compositions,Shared}/, the Models.X namespace-shadow workaround, the Compositions-take-interface rule, pure-UI takes-primitives variant, and where to put the Default.cshtml partial. Use when adding a render path for a doctype, mapping a generated PublishedContentModel to a strongly-typed view, wiring block-list items into ViewComponent dispatch, or authoring a pure-UI component like Button/Card.
 ---
 
 # umbraco-viewcomponent
 
-Razor render layer for code-first Umbraco DocumentTypes. The doctype `.config` and Brand.Core source layout is owned by the [usync-author](../usync-author/SKILL.md) skill — this skill covers the C# + Razor side only.
+Razor render layer for code-first Umbraco DocumentTypes **and** pure-UI ViewComponents. The doctype `.config` and Brand.Core source layout is owned by the [usync-author](../usync-author/SKILL.md) skill; the bucket-selection decision tree is owned by the [component-developer](../component-developer/SKILL.md) skill — this skill covers the C# + Razor side only.
 
 ## Co-location pattern
 
-For every doctype that needs its own render output, a ViewComponent and its ViewModel live in the same file, in the same folder as the source `.config`. The folder already exists for the doctype — see the layout in [usync-author](../usync-author/SKILL.md#source-layout).
+A ViewComponent and its ViewModel live in the same `.cs` file, in the same folder. For Umbraco-backed doctypes that's the same folder as the source `.config` (see the layout in [usync-author](../usync-author/SKILL.md#source-layout)). For **pure UI components** under `Brand.Core/Components/UI/<Name>/`, there's no `.config` — the folder holds just the `<Name>ViewComponent.cs` plus an optional `<Name>Variants.cs`.
 
 File convention:
 
@@ -48,10 +48,12 @@ Rules:
 - ViewModel is a `record` (positional, immutable). The view binds against it.
 - The ViewComponent only orchestrates: pull values off `source`, project into the VM, return `View(vm)`.
 
-## Invoke signature: interface (Compositions) vs model (Components)
+## Invoke signature: interface (Compositions) vs model (Components/Shared) vs primitives (Pure UI)
 
 - **Compositions** (`Brand.Core/Compositions/<Name>/`) — `Invoke` takes the generated **interface** (`IHeader`, `IFooter`). This lets any page that composes the mixin pass itself in. See [HeaderViewComponent.cs](../../../Brand.Core/Compositions/Header/HeaderViewComponent.cs).
-- **Components** (`Brand.Core/Components/<Page>/<Name>/`, `IsElement=true`) — `Invoke` takes the generated **class** (`Models.HeroBanner`). Elements aren't shared; the concrete type is fine.
+- **Page-scoped Components** (`Brand.Core/Components/<Page>/<Name>/`, `IsElement=true`) — `Invoke` takes the generated **class** (`Models.HeroBanner`). Elements aren't shared; the concrete type is fine.
+- **Shared blocks** (`Brand.Core/Shared/<Name>/`, `IsElement=true`) — same as page-scoped Components: `Invoke` takes the generated class via `Models.<Name>`.
+- **Pure UI** (`Brand.Core/Components/UI/<Name>/`) — `Invoke` takes **plain primitives** passed by the caller (e.g. `Invoke(string label, string href = "", string variant = "primary", string size = "md")`). No `source` parameter, no `Models.X` reference, no generated model exists. See [ButtonViewComponent.cs](../../../Brand.Core/Components/UI/Button/ButtonViewComponent.cs) for the canonical example.
 - **Pages** (`Brand.Core/Pages/<Name>/`) typically render via their template (`Views/<Alias>/<Alias>.cshtml`), not a ViewComponent. Skip the VC unless a page needs to be embedded somewhere as a fragment.
 
 ## Namespace-vs-class collision

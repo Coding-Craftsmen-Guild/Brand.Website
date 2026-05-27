@@ -1,4 +1,4 @@
-namespace Brand.Core.Compositions.Button;
+namespace Brand.Core.Components.UI.Button;
 
 public static class ButtonVariants
 {

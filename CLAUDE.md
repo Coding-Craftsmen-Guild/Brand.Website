@@ -6,19 +6,20 @@ These are the conventions for working in this repo. Follow them by default; devi
 
 - Toolchain is pinned in [.mise.toml](.mise.toml). Run `mise install` before doing anything else.
 - Run all repo commands through `mise run <task>`, not ad-hoc shells. If a recurring command doesn't have a task, add one to `.mise.toml` instead of documenting it elsewhere.
-- Scripts under `tools/` are bash (`*.sh`), invoked via `bash tools/<name>.sh` from mise tasks (see `rename-project`). On Windows, bash comes from Git Bash. Don't introduce other scripting languages for tooling.
+- Scripts under `tools/` are bash (`*.sh`), invoked via `bash tools/<name>.sh` from mise tasks (see `clone-project`). On Windows, bash comes from Git Bash. Don't introduce other scripting languages for tooling.
 
 ## Code style
 
 - Format everything via `mise run format` — csharpier for C#, Prettier for TS/CSS/JSON. CI gate is `mise run format:check`. ESLint runs separately: `mise run client:lint`.
 - No comments unless the *why* is non-obvious. Don't restate what the code already says.
 - Nullable reference types are **disabled** in every project (`<Nullable>disable</Nullable>`). Don't write `?` on reference type declarations (parameters, properties, return types, fields). Value type `?` (e.g., `int?`, `DateTime?`) is fine — that's `Nullable<T>`, not the reference-type annotation. If a new project is added, set `<Nullable>disable</Nullable>` to match.
-- `Brand.Web` and `brand.web` are placeholder names. To rename, use `mise run rename-project <NewName>` — never hand-edit folder/csproj names.
+- `Brand.Web` and `brand.web` are placeholder names. To start a new project from this template, use `mise run clone-project <NewName> <DestinationPath>` — never hand-edit folder/csproj names. It copies the tracked tree (via `git archive HEAD`) into the destination, rewrites the placeholder, and `git init`s a fresh repo there.
 
 ## Skills
 
 Specialised skills auto-load for Umbraco work. The model picks by description; this index is for humans:
 
+- [component-developer](.claude/skills/component-developer/SKILL.md) — entry-point orchestrator for adding a new component. Picks the bucket (pure UI vs page-scoped block vs shared block vs site-wide composition) and delegates to the four specialised skills below.
 - [usync-author](.claude/skills/usync-author/SKILL.md) — code-first DocumentType `.config` mechanics, GUID uniqueness, rename round-trip, bundler.
 - [umbraco-viewcomponent](.claude/skills/umbraco-viewcomponent/SKILL.md) — Razor render: co-located ViewComponent + ViewModel record, namespace-shadow workaround, partial discovery.
 - [umbraco-datatypes](.claude/skills/umbraco-datatypes/SKILL.md) — picking/creating DataTypes; index of the editors tracked under `Brand.Web/uSync/v17/DataTypes/`.
@@ -59,7 +60,7 @@ Client-side build is Vite-driven, owned entirely by [Brand.Web/](Brand.Web/). Ou
 - [Brand.Web/Views/Shared/Components/{Name}/](Brand.Web/Views/Shared/Components/Header/) — co-located per-component `*.ts` / `*.scss` next to `Default.cshtml`. **Just drop a file in; no registration.** Vite picks it up via `import.meta.glob('../Views/**/*.{ts,scss}', { eager: true })` in `main.ts`.
 - [Brand.Web/TagHelpers/](Brand.Web/TagHelpers/) — `<vite-asset>` tag helper + `ViteManifest` singleton
 - [Brand.Web/Extensions/](Brand.Web/Extensions/) — `@Html.Cn(...)` (backed by TailwindMerge.NET) for conflict-resolving class composition
-- [Brand.Core/Compositions/{Name}/{Name}Variants.cs](Brand.Core/Compositions/Header/HeaderVariants.cs) — cva-style variants helpers; class strings scanned by Tailwind via `@source "../../Brand.Core/**/*.cs"`
+- `Brand.Core/<bucket>/<Name>/<Name>Variants.cs` — cva-style variants helpers; class strings scanned by Tailwind via `@source "../../Brand.Core/**/*.cs"`. Canonical examples: [HeaderVariants.cs](Brand.Core/Compositions/Header/HeaderVariants.cs) for an Umbraco composition; [ButtonVariants.cs](Brand.Core/Components/UI/Button/ButtonVariants.cs) for a pure-UI component.
 
 ### Dev loop
 
@@ -104,6 +105,23 @@ Docker prod build has a dedicated `client` stage (`node:22-alpine`) that runs `n
 - Generated schema files (`appsettings-schema*.json`, `umbraco-package-schema.json`) are gitignored — they regenerate on build.
 - **ModelsBuilder-generated files (`Brand.Core/Generated/*.generated.cs`) are off-limits**. Never rename, move, or hand-edit them. They're owned by the generator — overwritten on every regen (SourceCodeAuto runs on every doctype save in dev). They are tracked in git (no gitignore) so PRs show the model deltas. If a doctype rename breaks compile transiently, fix it by changing the source `.config` and waiting for MB to regen — don't shortcut by editing the generated file.
 
+### Component taxonomy
+
+Four buckets under `Brand.Core/` — pick by **scope** and **whether Umbraco backs it**. The [component-developer skill](.claude/skills/component-developer/SKILL.md) owns the decision tree and delegates the mechanical work.
+
+| Bucket | Folder | Umbraco-backed? | `.config`? | DataTypes? | Block-listable? | Example |
+|---|---|---|---|---|---|---|
+| **Pure UI** | `Components/UI/<Name>/` | No | No | No | No | [Button](Brand.Core/Components/UI/Button/) — invoked inline by other components |
+| **Page-scoped block** | `Components/<Page>/<Name>/` | Yes, `IsElement=true` | Yes | Yes | Yes | [HeroBanner](Brand.Core/Components/HomePage/HeroBanner/) under HomePage |
+| **Shared block** | `Shared/<Name>/` | Yes, `IsElement=true` | Yes | Yes | Yes (any page's block-list) | *(none yet — first cross-page reusable block goes here)* |
+| **Site-wide composition** | `Compositions/<Name>/` | Yes, `IsElement=false` (mixin) | Yes | Yes | No | [Header](Brand.Core/Compositions/Header/), [Footer](Brand.Core/Compositions/Footer/), [GlobalSettings](Brand.Core/Compositions/GlobalSettings/) |
+
+Rules:
+- The folder path under `Brand.Core/` determines the C# namespace (`Brand.Core.Components.UI.Button`, `Brand.Core.Components.HomePage.HeroBanner`, `Brand.Core.Shared.<Name>`, `Brand.Core.Compositions.Header`).
+- Razor partials always live at `Brand.Web/Views/Shared/Components/<Name>/Default.cshtml` regardless of bucket — ViewComponent discovery is by class name, not source folder.
+- Pure-UI components have **no** `.config`, **no** entry in any block editor DataType, and are invoked inline (`Component.InvokeAsync("Button", new { ... })`).
+- Compositions take an **interface** in `Invoke(IHeader source)`; `Components/<Page>/<Name>/` and `Shared/<Name>/` element types take the **class** as `Invoke(Models.X source)`; pure UI takes plain primitives.
+
 ## uSync
 
 uSync folder is `Brand.Web/uSync/v17/`. Behaviour splits by environment.
@@ -117,7 +135,7 @@ Tracked vs gitignored in `Brand.Web/uSync/v17/`:
 
 Code-first authoring:
 - Use the [usync-author skill](.claude/skills/usync-author/SKILL.md). It enforces a mandatory GUID-uniqueness check before assigning any `Key` to a new DocumentType or Dictionary entry.
-- Source files live under [Brand.Core/](Brand.Core/) organised as `{Components,Compositions,Pages}/<Name>/<name>.config` — see the [usync-author skill](.claude/skills/usync-author/SKILL.md) for the layout rules.
+- Source files live under [Brand.Core/](Brand.Core/) organised as `{Components,Compositions,Shared,Pages}/<Name>/<name>.config` — see the [usync-author skill](.claude/skills/usync-author/SKILL.md) for the layout rules and `### Component taxonomy` above for which bucket to pick. Pure-UI components under `Components/UI/` have no `.config` and are out of scope for uSync.
 - `mise run usync:bundle` ([tools/usync-bundle.sh](tools/usync-bundle.sh)) wipes `Brand.Web/uSync/v17/ContentTypes/` and flat-copies every `*.config` under `Brand.Core/` into it (so source deletes propagate). Run after every doctype change. Dictionary bundling is not implemented yet — see `## Open questions`.
 
 Prod capture volume: `docker-compose.yml` bind-mounts `./usync:/app/uSync`, so prod runtime captures persist on the host and are inspectable. The folder is gitignored as `/usync/`.

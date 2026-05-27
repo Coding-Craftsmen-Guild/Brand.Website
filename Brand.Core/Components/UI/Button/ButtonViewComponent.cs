@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Brand.Core.Compositions.Button;
+namespace Brand.Core.Components.UI.Button;
 
 public sealed record ButtonViewModel(
     string Label,

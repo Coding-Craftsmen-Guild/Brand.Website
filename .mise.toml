@@ -66,10 +66,10 @@ run = "docker compose down"
 description = "Tail container logs."
 run = "docker compose logs -f web"
 
-[tasks.rename-project]
-description = "Rename the 'Project' placeholder to a real name (Brand.Web -> <NewName>.Web). Usage: mise run rename-project <NewName>"
-run = "bash tools/rename-project.sh"
-run_windows = 'C:\PROGRA~1\Git\bin\bash.exe tools/rename-project.sh'
+[tasks.clone-project]
+description = "Clone this template into a new directory and rename the placeholder. Usage: mise run clone-project <NewName> <DestinationPath>"
+run = "bash tools/clone-project.sh"
+run_windows = 'C:\PROGRA~1\Git\bin\bash.exe tools/clone-project.sh'
 
 [tasks."usync:bundle"]
 description = "Flat-copy all *.config under Brand.Core/{Components,Compositions,Pages} into Brand.Web/uSync/v17/ContentTypes/ so uSync's startup import can apply them."

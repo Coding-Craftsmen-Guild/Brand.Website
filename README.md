@@ -2,7 +2,7 @@
 
 Umbraco CMS site (.NET 10, Umbraco 17), runnable host-native or in Docker. SQLite is the default database; files live on the host under `./data/` so the DB is easy to inspect, back up, and reset.
 
-> The folder and assembly are named `Brand.Web` as a placeholder. Run `mise run rename-project <NewName>` once to rename everything.
+> The folder and assembly are named `Brand.Web` as a placeholder. Use `mise run clone-project <NewName> <DestinationPath>` to spin up a new project from this template — it copies the tracked tree, renames the placeholder, and `git init`s a fresh repo at the destination.
 
 ## Quick start
 
@@ -58,14 +58,20 @@ All tasks are defined in [.mise.toml](.mise.toml):
 | `mise run docker:up` | build + start the compose stack |
 | `mise run docker:down` | stop the stack |
 | `mise run docker:logs` | tail the `web` container |
-| `mise run rename-project <Name>` | rename `Brand.Web` → `<Name>.Web` everywhere |
+| `mise run clone-project <Name> <Dest>` | clone this template to `<Dest>`, rename `Brand.Web` → `<Name>.Web`, `git init` a fresh repo |
 
-## Renaming the project
+## Cloning the template into a new project
 
-Run once, with the actual name you want:
+Run once, with the name you want and the path for the new repo:
 
 ```sh
-mise run rename-project Acme.Site
+mise run clone-project Acme.Site ../acme-site
 ```
 
-This rewrites references in `*.csproj`, `*.toml`, `Dockerfile`, `docker-compose*.yml`, `.gitignore`, `.dockerignore`, `README.md`, and `CLAUDE.md`, then renames the `Brand.Web/` folder and `.csproj`. `bin/` and `obj/` are wiped. Run `mise run restore && mise run build` afterwards.
+This:
+
+1. Copies the tracked tree (`git archive HEAD`) into `<DestinationPath>` — no `.git`, `bin/`, `obj/`, `node_modules/`, or runtime data.
+2. Rewrites `Brand.Web` / `brand.web` references in `*.csproj`, `*.toml`, `Dockerfile`, `docker-compose*.yml`, `.gitignore`, `.dockerignore`, `README.md`, `CLAUDE.md`, etc., then renames the `Brand.Web/` folder and `.csproj`.
+3. Initialises a fresh git repo at the destination (no commit — review and commit yourself).
+
+Afterwards: `cd <DestinationPath> && mise install && mise run setup && mise run build`.
