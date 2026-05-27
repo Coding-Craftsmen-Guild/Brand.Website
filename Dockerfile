@@ -16,6 +16,20 @@ ENV DOTNET_RUNNING_IN_CONTAINER=true \
 
 EXPOSE 8080
 
+# ---------- client ----------
+# Vite + Tailwind v4 build for CSS/JS. Runs in parallel with dotnet restore
+# (Docker BuildKit). Output is wwwroot/dist/ which the build stage copies in
+# before `dotnet publish`.
+FROM node:22-alpine AS client
+WORKDIR /src
+COPY Brand.Web/package*.json ./Brand.Web/
+RUN cd Brand.Web && npm ci --no-audit --no-fund
+COPY Brand.Web/vite.config.ts Brand.Web/tsconfig.json ./Brand.Web/
+COPY Brand.Web/Client ./Brand.Web/Client
+COPY Brand.Web/Views ./Brand.Web/Views
+COPY Brand.Core/ ./Brand.Core/
+RUN cd Brand.Web && npm run build
+
 # ---------- build ----------
 # Restore + publish in the SDK image.
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS build
@@ -29,6 +43,11 @@ RUN dotnet restore Brand.Web/Brand.Web.csproj
 
 COPY Brand.Web/ ./Brand.Web/
 COPY Brand.Core/ ./Brand.Core/
+
+# Bring in the Vite-built client bundle before publish so `dotnet publish`
+# bundles wwwroot/dist/ into the final image.
+COPY --from=client /src/Brand.Web/wwwroot/dist ./Brand.Web/wwwroot/dist
+
 RUN dotnet publish Brand.Web/Brand.Web.csproj \
     -c Release \
     -o /app/publish \

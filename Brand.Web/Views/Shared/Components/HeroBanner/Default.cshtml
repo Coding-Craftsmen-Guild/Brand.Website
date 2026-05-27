@@ -1,0 +1,43 @@
+@model Brand.Core.Components.HomePage.HeroBanner.HeroBannerViewModel
+
+<section class="relative isolate overflow-hidden bg-gray-900 text-white" data-component="hero-banner">
+    @if (Model.Background is not null)
+    {
+        <img src="@Model.Background.Url()" alt="" class="absolute inset-0 -z-10 h-full w-full object-cover opacity-60" />
+    }
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
+        <div class="max-w-2xl">
+            @if (!string.IsNullOrWhiteSpace(Model.Title))
+            {
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
+                    @Model.Title
+                </h1>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.Text))
+            {
+                <p class="mt-6 text-lg sm:text-xl text-gray-200 whitespace-pre-line">
+                    @Model.Text
+                </p>
+            }
+
+            @if (Model.Buttons?.Any() == true)
+            {
+                <div class="mt-10 flex flex-wrap items-center gap-4">
+                    @foreach (var (button, index) in Model.Buttons.Select((b, i) => (b, i)))
+                    {
+                        @await Component.InvokeAsync("Button", new
+                        {
+                            label = button.Name,
+                            href = button.Url,
+                            target = button.Target,
+                            variant = index == 0 ? "secondary" : "outline",
+                            size = "lg",
+                        })
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</section>

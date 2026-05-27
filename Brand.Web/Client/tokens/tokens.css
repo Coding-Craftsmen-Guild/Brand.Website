@@ -1,0 +1,19 @@
+@theme {
+  --color-brand-50: oklch(0.97 0.02 250);
+  --color-brand-100: oklch(0.93 0.04 250);
+  --color-brand-200: oklch(0.86 0.07 250);
+  --color-brand-300: oklch(0.78 0.1 250);
+  --color-brand-400: oklch(0.69 0.13 250);
+  --color-brand-500: oklch(0.6 0.15 250);
+  --color-brand-600: oklch(0.52 0.16 250);
+  --color-brand-700: oklch(0.45 0.16 250);
+  --color-brand-800: oklch(0.35 0.13 250);
+  --color-brand-900: oklch(0.25 0.1 250);
+
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: var(--font-sans);
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+}

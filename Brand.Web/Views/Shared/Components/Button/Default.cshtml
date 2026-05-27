@@ -1,0 +1,15 @@
+@model Brand.Core.Compositions.Button.ButtonViewModel
+@using Brand.Core.Compositions.Button
+
+@{
+    var classes = Html.Cn(ButtonVariants.Base, ButtonVariants.Variant(Model.Variant), ButtonVariants.Size(Model.Size));
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Href))
+{
+    <a href="@Model.Href" target="@Model.Target" class="@classes">@Model.Label</a>
+}
+else
+{
+    <button type="button" class="@classes">@Model.Label</button>
+}

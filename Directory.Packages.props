@@ -10,5 +10,6 @@
     <PackageVersion Include="uSync" Version="17.3.2" />
     <PackageVersion Include="Skybrud.Umbraco.Redirects" Version="17.0.4" />
     <PackageVersion Include="SeoToolkit.Umbraco" Version="6.3.0" />
+    <PackageVersion Include="TailwindMerge.NET" Version="1.4.0" />
   </ItemGroup>
 </Project>

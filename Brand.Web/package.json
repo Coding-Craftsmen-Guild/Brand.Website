@@ -1,0 +1,29 @@
+{
+  "name": "brand-web-client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n vite,dotnet -c blue,green \"npm:dev:vite\" \"npm:dev:dotnet\"",
+    "dev:vite": "vite",
+    "dev:dotnet": "dotnet watch --project Brand.Web.csproj run",
+    "build": "vite build",
+    "preview": "vite preview",
+    "analyze": "vite build --mode analyze",
+    "lint": "eslint Client Views",
+    "lint:fix": "eslint Client Views --fix",
+    "format": "prettier --write \"Client/**/*.{ts,css,json}\" \"Views/**/*.{ts,css}\"",
+    "format:check": "prettier --check \"Client/**/*.{ts,css,json}\" \"Views/**/*.{ts,css}\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "concurrently": "^9.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^10.0.0",
+    "prettier": "^3.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.0.0",
+    "vite": "^7.0.0"
+  }
+}

@@ -1,5 +1,7 @@
+using Brand.Web.TagHelpers;
 using Microsoft.AspNetCore.Mvc.Razor;
 using OpenIddict.Server.AspNetCore;
+using TailwindMerge.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,9 @@ builder.Services.Configure<RazorViewEngineOptions>(o =>
 {
     o.ViewLocationExpanders.Add(new Brand.Web.ViewLocations.DoctypeFolderViewLocationExpander());
 });
+
+builder.Services.AddSingleton<ViteManifest>();
+builder.Services.AddTailwindMerge();
 
 if (builder.Environment.IsDevelopment())
 {

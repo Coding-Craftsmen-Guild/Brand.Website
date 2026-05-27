@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+
+@source "../Views/**/*.cshtml";
+@source "../Views/**/*.ts";
+@source "../Client/**/*.ts";
+@source "../../Brand.Core/**/*.cs";
+
+@import './tokens/tokens.css';
+@import './tokens/fonts.css';
+@import './base/reset.css';
+@import './base/base.css';
+@import './typography/typography.css';

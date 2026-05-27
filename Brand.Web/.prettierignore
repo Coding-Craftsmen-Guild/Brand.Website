@@ -1,0 +1,7 @@
+node_modules/
+wwwroot/
+obj/
+bin/
+*.cshtml
+*.cs
+package-lock.json

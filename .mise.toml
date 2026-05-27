@@ -8,7 +8,8 @@ DOTNET_NOLOGO = "1"
 ASPNETCORE_ENVIRONMENT = "Development"
 
 [tasks.setup]
-description = "Install local .NET tools (csharpier, etc.) — run once after `mise install`."
+description = "Install local .NET tools + client deps — run once after `mise install`."
+depends = ["client:install"]
 run = "dotnet tool restore"
 
 [tasks.restore]
@@ -16,26 +17,29 @@ description = "Restore NuGet packages for Brand.Web."
 run = "dotnet restore Brand.Web/Brand.Web.csproj"
 
 [tasks.build]
-description = "Debug build."
+description = "Debug build (includes a fresh Vite client build)."
 run = "dotnet build Brand.Web/Brand.Web.csproj"
-depends = ["restore"]
+depends = ["restore", "client:build"]
 
 [tasks.dev]
-description = "Run Umbraco locally with hot reload (host-native, fastest iteration). Bundles code-first uSync sources first."
-run = "dotnet watch --project Brand.Web/Brand.Web.csproj"
-depends = ["usync:bundle"]
+description = "Run Umbraco + Vite dev server with HMR (single terminal). Bundles uSync first."
+depends = ["usync:bundle", "client:install"]
+dir = "Brand.Web"
+run = "npm run dev"
 
 [tasks.run]
-description = "Run Umbraco without watch. Bundles code-first uSync sources first."
+description = "Run Umbraco without watch (prod-like, uses pre-built Vite bundle). Bundles uSync + builds client first."
 run = "dotnet run --project Brand.Web/Brand.Web.csproj"
-depends = ["usync:bundle"]
+depends = ["usync:bundle", "client:build"]
 
 [tasks.format]
-description = "Format C# with csharpier."
+description = "Format all code (C# via csharpier + TS/CSS/JSON via Prettier)."
+depends = ["client:format"]
 run = "dotnet csharpier format ."
 
 [tasks."format:check"]
-description = "Verify formatting without writing changes."
+description = "Verify all formatting (csharpier + Prettier) — CI gate."
+depends = ["client:format:check"]
 run = "dotnet csharpier check ."
 
 [tasks.clean]
@@ -81,3 +85,49 @@ run_windows = 'C:\PROGRA~1\Git\bin\bash.exe tools/sync-skills.sh'
 description = "Dry-run skills:sync — exits non-zero if any upstream change is pending. Useful in pre-commit/CI."
 run = "bash tools/sync-skills.sh --check"
 run_windows = 'C:\PROGRA~1\Git\bin\bash.exe tools/sync-skills.sh --check'
+
+[tasks."client:install"]
+description = "Install Brand.Web client dependencies (idempotent — npm install)."
+dir = "Brand.Web"
+run = "npm install --no-audit --no-fund"
+
+[tasks."client:dev"]
+description = "Run only the Vite dev server (escape hatch — `mise run dev` runs it together with dotnet watch)."
+depends = ["client:install"]
+dir = "Brand.Web"
+run = "npm run dev:vite"
+
+[tasks."client:build"]
+description = "Build the production client bundle into Brand.Web/wwwroot/dist/."
+depends = ["client:install"]
+dir = "Brand.Web"
+run = "npm run build"
+
+[tasks."dotnet:watch"]
+description = "Run only dotnet watch (escape hatch — `mise run dev` runs it together with Vite)."
+depends = ["usync:bundle"]
+run = "dotnet watch --project Brand.Web/Brand.Web.csproj"
+
+[tasks."client:lint"]
+description = "Lint Brand.Web TS sources with ESLint."
+depends = ["client:install"]
+dir = "Brand.Web"
+run = "npm run lint"
+
+[tasks."client:lint:fix"]
+description = "Lint + auto-fix Brand.Web TS sources."
+depends = ["client:install"]
+dir = "Brand.Web"
+run = "npm run lint:fix"
+
+[tasks."client:format"]
+description = "Format Brand.Web TS/CSS/JSON sources with Prettier."
+depends = ["client:install"]
+dir = "Brand.Web"
+run = "npm run format"
+
+[tasks."client:format:check"]
+description = "Check Brand.Web Prettier formatting (CI gate)."
+depends = ["client:install"]
+dir = "Brand.Web"
+run = "npm run format:check"

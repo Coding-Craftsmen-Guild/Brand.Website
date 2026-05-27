@@ -1,12 +1,13 @@
 @model Brand.Core.Compositions.Footer.FooterViewModel
-<footer style="border: 1px dashed #888; padding: 1rem; margin-top: 1rem;">
-    <strong>[Footer]</strong>
+
+<footer class="@Html.Cn("flex items-center justify-between gap-4 px-6 py-6 border-t border-brand-100 text-sm text-brand-700")" data-component="footer">
     @if (Model.Logo is not null)
     {
-        <div>Logo: <img src="@Model.Logo.Url()" alt="" style="max-height: 40px; vertical-align: middle;" /></div>
+        <img src="@Model.Logo.Url()" alt="" class="max-h-8 w-auto" />
     }
     else
     {
-        <div><em>no logo set</em></div>
+        <span class="italic text-brand-400">no logo set</span>
     }
+    <span>&copy; @DateTime.UtcNow.Year</span>
 </footer>

@@ -31,10 +31,13 @@ LICENSE
 **/[Dd]ebug/
 **/[Rr]elease/
 
-# Node (if any front-end tooling is added later)
+# Node (front-end tooling via Vite + Tailwind)
 **/node_modules/
 **/npm-debug.log
 **/yarn-error.log
+# Vite output is rebuilt inside the image by the `client` stage — never bake host artifacts in
+**/dist/
+**/.vite/
 
 # Umbraco runtime artefacts that must never be baked into the image
 Brand.Web/umbraco/Data/TEMP/

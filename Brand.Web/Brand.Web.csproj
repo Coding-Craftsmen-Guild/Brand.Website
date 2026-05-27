@@ -13,6 +13,23 @@
     <PackageReference Include="uSync" />
     <PackageReference Include="Skybrud.Umbraco.Redirects" />
     <PackageReference Include="SeoToolkit.Umbraco" />
+    <PackageReference Include="TailwindMerge.NET" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Client-side assets are owned by Vite. Keep them out of MSBuild's content/compile enumeration so
+         dotnet doesn't try to publish raw TypeScript or include node_modules. The built bundle lands in
+         wwwroot/dist/ which dotnet publish picks up via the standard wwwroot convention. -->
+    <Content Remove="Client\**" />
+    <None Remove="Client\**" />
+    <Compile Remove="Client\**" />
+    <Content Remove="node_modules\**" />
+    <None Remove="node_modules\**" />
+    <Compile Remove="node_modules\**" />
+    <Content Remove="Views\**\*.ts" />
+    <Content Remove="Views\**\*.css" />
+    <None Remove="Views\**\*.ts" />
+    <None Remove="Views\**\*.css" />
   </ItemGroup>
 
   <ItemGroup>

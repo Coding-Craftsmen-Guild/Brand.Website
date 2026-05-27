@@ -1,0 +1,3 @@
+[data-component='header'].is-open [data-header-toggle] {
+  background-color: var(--color-brand-50);
+}

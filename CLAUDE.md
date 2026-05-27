@@ -10,7 +10,7 @@ These are the conventions for working in this repo. Follow them by default; devi
 
 ## Code style
 
-- Format C# with csharpier: `mise run format`. CI gate is `mise run format:check`.
+- Format everything via `mise run format` — csharpier for C#, Prettier for TS/CSS/JSON. CI gate is `mise run format:check`. ESLint runs separately: `mise run client:lint`.
 - No comments unless the *why* is non-obvious. Don't restate what the code already says.
 - Nullable reference types are **disabled** in every project (`<Nullable>disable</Nullable>`). Don't write `?` on reference type declarations (parameters, properties, return types, fields). Value type `?` (e.g., `int?`, `DateTime?`) is fine — that's `Nullable<T>`, not the reference-type annotation. If a new project is added, set `<Nullable>disable</Nullable>` to match.
 - `Brand.Web` and `brand.web` are placeholder names. To rename, use `mise run rename-project <NewName>` — never hand-edit folder/csproj names.
@@ -42,6 +42,58 @@ Specialised skills auto-load for Umbraco work. The model picks by description; t
 - `docker-compose.yml` is the base. `docker-compose.override.yml` is picked up automatically and switches to the `dev` build target with `dotnet watch` + source bind mount.
 - The data directory uses a **host bind mount** (`./data`) in both files — this is intentional so the SQLite file is inspectable. Logs and media remain named volumes.
 - Don't bake runtime artefacts (DB, logs, media, schemas) into the image — they're already excluded via [.dockerignore](.dockerignore).
+
+## Client assets (Vite + Tailwind v4)
+
+Client-side build is Vite-driven, owned entirely by [Brand.Web/](Brand.Web/). Output lands in `Brand.Web/wwwroot/dist/` (gitignored, image-built).
+
+### Folder layout
+
+- [Brand.Web/Client/](Brand.Web/Client/) — global concerns
+  - `main.ts` — entry; imports `main.css` and glob-imports every co-located component `.ts`
+  - `main.css` — Tailwind v4 + `@source` scans (`.cshtml`, `.ts`, `.cs` in Brand.Core) + token/base/typography imports
+  - `lib/component.ts` — `defineComponent(selector, init)` idempotent DOM-binding primitive
+  - `tokens/`, `base/`, `typography/`, `assets/`, `fonts/` — design-system globals
+- [Brand.Web/Views/Shared/Components/{Name}/](Brand.Web/Views/Shared/Components/Header/) — co-located per-component `*.ts` / `*.css` next to `Default.cshtml`. **Just drop a file in; no registration.** Vite picks it up via `import.meta.glob('../Views/**/*.ts', { eager: true })` in `main.ts`.
+- [Brand.Web/TagHelpers/](Brand.Web/TagHelpers/) — `<vite-asset>` tag helper + `ViteManifest` singleton
+- [Brand.Web/Extensions/](Brand.Web/Extensions/) — `@Html.Cn(...)` (backed by TailwindMerge.NET) for conflict-resolving class composition
+- [Brand.Core/Compositions/{Name}/{Name}Variants.cs](Brand.Core/Compositions/Header/HeaderVariants.cs) — cva-style variants helpers; class strings scanned by Tailwind via `@source "../../Brand.Core/**/*.cs"`
+
+### Dev loop
+
+`mise run dev` is a **single command** that runs Vite + dotnet watch concurrently in one terminal (via the `concurrently` npm dev dep). HMR works for CSS/TS; Razor changes still trigger a full reload via dotnet watch. Escape hatches: `mise run client:dev` and `mise run dotnet:watch` for two-terminal mode.
+
+`<vite-asset entry="Client/main.ts" />` in [_Layout.cshtml](Brand.Web/Views/_Layout.cshtml) emits dev-server URLs in Development and hashed manifest paths in Production (read once on startup from `wwwroot/dist/.vite/manifest.json`).
+
+### Authoring conventions
+
+- Razor classes: `class="@Html.Cn(HeaderVariants.Base, isOpen ? "bg-brand-100" : "")"` — `Cn` calls `TwMerge.Merge` so conflicting classes resolve correctly (`px-4 px-6` → `px-6`).
+- Variants: define `public static class XxxVariants` next to the ViewComponent ([HeaderVariants.cs](Brand.Core/Compositions/Header/HeaderVariants.cs) is the canonical example).
+- Component scripts: `defineComponent('[data-component="xxx"]', el => { ... })` from `@/lib/component`. Razor opts in by adding `data-component="xxx"` to the root element. The `__inited` guard is idempotent — safe for Umbraco backoffice DOM swaps.
+- Path aliases: `@/...` → `Brand.Web/Client/`, `@views/...` → `Brand.Web/Views/`.
+- New design tokens go in [Brand.Web/Client/tokens/tokens.css](Brand.Web/Client/tokens/tokens.css) via Tailwind v4's `@theme` directive (`--color-*`, `--font-*`, `--radius-*`).
+
+### Adding dependencies
+
+```
+cd Brand.Web
+npm install <pkg> --save        # runtime — joins the bundle
+npm install <pkg> --save-dev    # build-time only
+```
+
+Commit both `package.json` AND `package-lock.json` — Docker uses `npm ci` against the lockfile. Prefer ESM-only packages with named imports for tree-shaking; CommonJS deps don't tree-shake well.
+
+### Production build
+
+`mise run client:build` runs `vite build` → emits hashed `wwwroot/dist/assets/*.{js,css,map}` + a separate `vendor-*.js` chunk (so vendor cache survives app-only changes) + `.vite/manifest.json`. Source maps are emitted hidden (no `//# sourceMappingURL=` reference; available for error-tracker symbolication).
+
+Docker prod build has a dedicated `client` stage (`node:22-alpine`) that runs `npm ci && npm run build`; the `build` stage `COPY --from=client` brings `wwwroot/dist/` in before `dotnet publish`. No node binaries in the runtime image.
+
+### Recommended VSCode extensions
+
+- `dbaeumer.vscode-eslint` — ESLint w/ format-on-save
+- `esbenp.prettier-vscode` — Prettier as default formatter
+- `bradlc.vscode-tailwindcss` — Tailwind v4 IntelliSense
 
 ## Umbraco specifics
 
@@ -80,6 +132,7 @@ Prod capture volume: `docker-compose.yml` bind-mounts `./usync:/app/uSync`, so p
 - `Brand.Web/umbraco/Logs/` and `Brand.Web/wwwroot/media/`
 - `Brand.Web/uSync/v17/ContentTypes/` and `Brand.Web/uSync/v17/Dictionary/` — code-first artifacts
 - `/usync/` — prod uSync runtime capture volume
+- `Brand.Web/node_modules/`, `Brand.Web/wwwroot/dist/`, `**/.vite/` — Vite client build output (rebuilt in Docker `client` stage)
 - Secrets of any kind. There are no env-var files checked in; add them to `.mise.local.toml` (gitignored) if you need per-developer overrides.
 
 ## Open questions
