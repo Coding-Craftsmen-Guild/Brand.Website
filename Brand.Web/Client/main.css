@@ -5,8 +5,8 @@
 @source "../Client/**/*.ts";
 @source "../../Brand.Core/**/*.cs";
 
-@import './tokens/tokens.css';
-@import './tokens/fonts.css';
-@import './base/reset.css';
-@import './base/base.css';
-@import './typography/typography.css';
+@import './tokens/tokens.scss';
+@import './tokens/fonts.scss';
+@import './base/reset.scss';
+@import './base/base.scss';
+@import './typography/typography.scss';

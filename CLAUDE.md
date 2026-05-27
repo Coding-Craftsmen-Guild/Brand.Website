@@ -43,18 +43,20 @@ Specialised skills auto-load for Umbraco work. The model picks by description; t
 - The data directory uses a **host bind mount** (`./data`) in both files — this is intentional so the SQLite file is inspectable. Logs and media remain named volumes.
 - Don't bake runtime artefacts (DB, logs, media, schemas) into the image — they're already excluded via [.dockerignore](.dockerignore).
 
-## Client assets (Vite + Tailwind v4)
+## Client assets (Vite + Tailwind v4 + SCSS)
 
 Client-side build is Vite-driven, owned entirely by [Brand.Web/](Brand.Web/). Output lands in `Brand.Web/wwwroot/dist/` (gitignored, image-built).
+
+`main.css` stays as plain CSS — it's the Tailwind v4 entry, and Tailwind's directives (`@import 'tailwindcss'`, `@source`, `@theme`, `@apply`) must reach the Tailwind Vite plugin unprocessed. Everything else — tokens, base, typography, component partials — is `.scss` (compiled by `sass-embedded` before Vite hands the result to Tailwind). Use SCSS features freely in partials; just don't put Tailwind directives in them.
 
 ### Folder layout
 
 - [Brand.Web/Client/](Brand.Web/Client/) — global concerns
-  - `main.ts` — entry; imports `main.css` and glob-imports every co-located component `.ts`
-  - `main.css` — Tailwind v4 + `@source` scans (`.cshtml`, `.ts`, `.cs` in Brand.Core) + token/base/typography imports
+  - `main.ts` — entry; imports `main.css` and glob-imports every co-located component `.ts` and `.scss`
+  - `main.css` — Tailwind v4 entry + `@source` scans (`.cshtml`, `.ts`, `.cs` in Brand.Core) + token/base/typography `@import`s (which resolve to `.scss` partials via Vite)
   - `lib/component.ts` — `defineComponent(selector, init)` idempotent DOM-binding primitive
-  - `tokens/`, `base/`, `typography/`, `assets/`, `fonts/` — design-system globals
-- [Brand.Web/Views/Shared/Components/{Name}/](Brand.Web/Views/Shared/Components/Header/) — co-located per-component `*.ts` / `*.css` next to `Default.cshtml`. **Just drop a file in; no registration.** Vite picks it up via `import.meta.glob('../Views/**/*.ts', { eager: true })` in `main.ts`.
+  - `tokens/`, `base/`, `typography/`, `assets/`, `fonts/` — design-system globals (SCSS)
+- [Brand.Web/Views/Shared/Components/{Name}/](Brand.Web/Views/Shared/Components/Header/) — co-located per-component `*.ts` / `*.scss` next to `Default.cshtml`. **Just drop a file in; no registration.** Vite picks it up via `import.meta.glob('../Views/**/*.{ts,scss}', { eager: true })` in `main.ts`.
 - [Brand.Web/TagHelpers/](Brand.Web/TagHelpers/) — `<vite-asset>` tag helper + `ViteManifest` singleton
 - [Brand.Web/Extensions/](Brand.Web/Extensions/) — `@Html.Cn(...)` (backed by TailwindMerge.NET) for conflict-resolving class composition
 - [Brand.Core/Compositions/{Name}/{Name}Variants.cs](Brand.Core/Compositions/Header/HeaderVariants.cs) — cva-style variants helpers; class strings scanned by Tailwind via `@source "../../Brand.Core/**/*.cs"`
@@ -71,7 +73,7 @@ Client-side build is Vite-driven, owned entirely by [Brand.Web/](Brand.Web/). Ou
 - Variants: define `public static class XxxVariants` next to the ViewComponent ([HeaderVariants.cs](Brand.Core/Compositions/Header/HeaderVariants.cs) is the canonical example).
 - Component scripts: `defineComponent('[data-component="xxx"]', el => { ... })` from `@/lib/component`. Razor opts in by adding `data-component="xxx"` to the root element. The `__inited` guard is idempotent — safe for Umbraco backoffice DOM swaps.
 - Path aliases: `@/...` → `Brand.Web/Client/`, `@views/...` → `Brand.Web/Views/`.
-- New design tokens go in [Brand.Web/Client/tokens/tokens.css](Brand.Web/Client/tokens/tokens.css) via Tailwind v4's `@theme` directive (`--color-*`, `--font-*`, `--radius-*`).
+- New design tokens go in [Brand.Web/Client/tokens/tokens.scss](Brand.Web/Client/tokens/tokens.scss) via Tailwind v4's `@theme` directive (`--color-*`, `--font-*`, `--radius-*`). SCSS passes `@theme` through untouched, so Tailwind still reads it.
 
 ### Adding dependencies
 
