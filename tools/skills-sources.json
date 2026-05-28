@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "ac653c62e4b6658854626676460dd7e3839ce99e",
+      "commit": "bd5e7402db48d99fac323abd1be653077a3ab0ed",
       "files": {
         "plugins/dotnet-aspnet/skills/configuring-opentelemetry-dotnet/SKILL.md": {
           "blob": "c99fe5c521da77e0c76157eb37d92fd9e7c2ec70",
