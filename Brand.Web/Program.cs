@@ -1,3 +1,4 @@
+using Brand.Core.Extensions;
 using Brand.Web.TagHelpers;
 using Microsoft.AspNetCore.Mvc.Razor;
 using OpenIddict.Server.AspNetCore;
@@ -5,7 +6,7 @@ using TailwindMerge.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.CreateUmbracoBuilder().AddBackOffice().AddWebsite().AddComposers().Build();
+builder.CreateUmbracoBuilder().AddBackOffice().AddWebsite().AddComposers().RegisterCore().Build();
 
 builder.Services.Configure<RazorViewEngineOptions>(o =>
 {

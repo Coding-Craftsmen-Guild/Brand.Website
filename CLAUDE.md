@@ -118,6 +118,13 @@ Follow this order whenever you add or change a doctype/property that your C# wil
 
 A fresh clone with no `data/` DB has no content models yet; the first `mise run dev` performs the unattended install and the initial generation. Committed generated models must match the configured `Umbraco:CMS:ModelsBuilder:ModelsNamespace` (`Brand.Core.Models`) — stale files under a different namespace won't satisfy `Models.X` references until regenerated.
 
+### Page templates — managed in code, NEVER put `Layout` in a template view
+
+- **Never add a `Layout = "..."` line to a page template view** (`Brand.Web/Views/{Alias}.cshtml`). The default layout is set once in [Brand.Web/Views/_ViewStart.cshtml](Brand.Web/Views/_ViewStart.cshtml). **Why:** Umbraco's template create parses a view's `Layout = "X"` as a *master-template alias* and fails with `MasterTemplateNotFound` (our `_Layout` is a plain MVC layout, not an Umbraco master). uSync 17.3.2 also can't import templates on Umbraco 17 at all, so templates are not uSync-managed.
+- **Templates are created in code, not uSync.** uSync's `TemplateHandler` is disabled (both appsettings). On startup [EnsurePageTemplatesHandler](Brand.Core/Notifications/EnsurePageTemplatesHandler.cs) (registered via `RegisterCore` in [Brand.Core/Extensions/](Brand.Core/Extensions/)) iterates doc types and, for each one that has a `Views/{Alias}.cshtml`, creates a matching Template from that view and sets it as the doc type's default/allowed template. It's idempotent (no churn).
+- **To add a page template:** drop `Brand.Web/Views/{Alias}.cshtml` (Alias = PascalCase of the doc type alias, e.g. `homePage` → `HomePage.cshtml`) with **no `Layout` line**, and don't add anything under uSync `Templates/`. The checker wires it on next boot.
+- All Core service/notification registrations live in the single `RegisterCore(this IUmbracoBuilder)` extension, called from [Program.cs](Brand.Web/Program.cs).
+
 ### Component taxonomy
 
 Four buckets under `Brand.Core/` — pick by **scope** and **whether Umbraco backs it**. The [component-developer skill](.claude/skills/component-developer/SKILL.md) owns the decision tree and delegates the mechanical work.
