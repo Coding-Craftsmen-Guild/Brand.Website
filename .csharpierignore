@@ -1,0 +1,4 @@
+# CSharpier 1.x also formats XML. uSync .config files (and other XML configs)
+# are owned by uSync's own serializer / tooling — keep their inline CDATA style
+# and let those tools manage them. Don't let the C# formatter reflow them.
+*.config
