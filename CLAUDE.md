@@ -105,6 +105,19 @@ Docker prod build has a dedicated `client` stage (`node:22-alpine`) that runs `n
 - Generated schema files (`appsettings-schema*.json`, `umbraco-package-schema.json`) are gitignored — they regenerate on build.
 - **ModelsBuilder-generated files (`Brand.Core/Generated/*.generated.cs`) are off-limits**. Never rename, move, or hand-edit them. They're owned by the generator — overwritten on every regen (SourceCodeAuto runs on every doctype save in dev). They are tracked in git (no gitignore) so PRs show the model deltas. If a doctype rename breaks compile transiently, fix it by changing the source `.config` and waiting for MB to regen — don't shortcut by editing the generated file.
 
+### New-model bootstrap ordering (IMPORTANT)
+
+`ModelsMode` is `SourceCodeAuto` (dev): generated models in `Brand.Core/Generated/` are written **by the running app**, not by `dotnet build`. So C# that references a *new or changed* model member (a new doctype's `Models.X`, a newly-added property like `HomePage.Socials`, a new element model) **cannot compile until the app has run once and regenerated the models**. Build-first fails with `CS0234`/`CS0246` — a chicken-and-egg.
+
+Follow this order whenever you add or change a doctype/property that your C# will consume:
+
+1. Author/edit the `.config` source under `Brand.Core/`.
+2. `mise run usync:bundle` — flatten sources into `uSync/v17/ContentTypes/`.
+3. **Run the app** (`mise run dev`) so uSync imports the schema and MB regenerates `*.generated.cs`. If existing model-consuming C# (other ViewComponents) blocks the build so the app can't boot, temporarily move those `.cs` aside (Razor views are runtime-compiled and don't block the build), boot once, then restore them.
+4. **Then** write/finish the C# (ViewComponents, etc.) that references the new members and rebuild — `dotnet watch` picks it up green.
+
+A fresh clone with no `data/` DB has no content models yet; the first `mise run dev` performs the unattended install and the initial generation. Committed generated models must match the configured `Umbraco:CMS:ModelsBuilder:ModelsNamespace` (`Brand.Core.Models`) — stale files under a different namespace won't satisfy `Models.X` references until regenerated.
+
 ### Component taxonomy
 
 Four buckets under `Brand.Core/` — pick by **scope** and **whether Umbraco backs it**. The [component-developer skill](.claude/skills/component-developer/SKILL.md) owns the decision tree and delegates the mechanical work.
