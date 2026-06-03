@@ -87,6 +87,17 @@ The `<ComponentName>` folder matches the class name minus the `ViewComponent` su
 
 `Brand.Web/Views/_ViewImports.cshtml` already imports the relevant namespaces — confirm before adding fully-qualified `@model` references.
 
+## Tailwind class conventions (Razor markup)
+
+Styling in `Default.cshtml` (and any view partial) is **utility-first Tailwind v4** — components don't ship a `.scss`. Follow the canonical forms; the `bradlc.vscode-tailwindcss` extension flags non-canonical classes as `suggestCanonicalClasses` warnings, and a clean file has none.
+
+- **CSS variables** — use the bare `(--var)` shorthand, never `[var(--var)]`: `px-(--gutter)`, `max-w-(--container)`, `gap-(--s-6)`. (The `--s-*`, `--gutter`, `--container` layout vars live in [tokens.scss](../../../Brand.Web/Client/tokens/tokens.scss) `:root`; the `--color-brand-*` / `--font-*` / `--radius-*` design tokens are `@theme` and resolve to real utilities like `text-brand-ink`, `font-display`, `rounded-sm`.)
+- **Spacing — use the dynamic scale, not arbitrary px.** Tailwind v4 generates any multiple of the `0.25rem` base on demand, so divide px by 4: `14px → gap-3.5`, `18px → py-4.5`, `38px → w-9.5`, `3px → -bottom-0.75`, `160px → min-w-40`. Never write `gap-[14px]`.
+- **Breakpoints — mobile-first named breakpoints, never arbitrary `max-[1000px]`.** Author the mobile layout as the default and add `lg:` overrides for desktop (`hidden lg:flex`, `flex lg:hidden`, `grid-cols-[auto_1fr_auto] lg:grid-cols-[auto_1fr_auto_auto]`). For the rare style that must be scoped to *below* a breakpoint, use the named max variant (`max-lg:…`) — not a pixel literal.
+- **JS-driven state — data attributes, not marker classes.** Component scripts toggle clean `data-*` attributes (e.g. [header.ts](../../../Brand.Web/Views/Shared/Components/Header/header.ts) sets `data-scroll` / `data-open` via `toggleAttribute`). Style them with: `data-scroll:…` (the element itself), `in-data-scroll:…` (any descendant of an ancestor carrying the attr), and `group-data-open/<name>:…` (a `group/<name>`-scoped ancestor, when a bare `in-*` would collide with the same attr elsewhere). Prefer this over `is-*` classes.
+- **Conditional classes** — compose with `@Html.Cn(base, cond ? extra : "")` ([HtmlClassExtensions.cs](../../../Brand.Web/Extensions/HtmlClassExtensions.cs)), which runs TailwindMerge so a later class wins a conflict (`after:scale-x-0` + `after:scale-x-100` → `100`).
+- **Keep arbitrary `[…]` only where no token or scale exists** — off-scale font sizes (`text-[9.5px]`), `tracking-[0.22em]`, `leading-[1.15]`, `shadow-[…]`, `top-[calc(100%+8px)]`, `backdrop-blur-[14px]`.
+
 ## Custom template discovery (pages)
 
 A page template can live at either `Views/<Alias>.cshtml` (default) or `Views/<Alias>/<Alias>.cshtml` (preferred — keeps related view files together). The second location is enabled by [Brand.Web/ViewLocations/DoctypeFolderViewLocationExpander.cs](../../../Brand.Web/ViewLocations/DoctypeFolderViewLocationExpander.cs), registered in `Program.cs`. Example: [Brand.Web/Views/HomePage/HomePage.cshtml](../../../Brand.Web/Views/HomePage/HomePage.cshtml).

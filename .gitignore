@@ -457,12 +457,12 @@ $RECYCLE.BIN/
 ## Umbraco CMS (scoped to Brand.Web/)
 ##
 
-# JSON schema files for appsettings.json
-Brand.Web/appsettings-schema.json
-Brand.Web/appsettings-schema.*.json
+# JSON schema files for appsettings.json (generated on build, any project)
+appsettings-schema.json
+appsettings-schema.*.json
 
-# JSON schema file for umbraco-package.json
-Brand.Web/umbraco-package-schema.json
+# JSON schema file for umbraco-package.json (generated on build, any project)
+umbraco-package-schema.json
 
 # Packages created from the backoffice (package.xml/package.zip)
 Brand.Web/umbraco/Data/CreatedPackages/
