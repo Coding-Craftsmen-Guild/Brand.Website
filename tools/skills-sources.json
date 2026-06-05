@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "ecbecbc6f7bef999c73b8ab7f8b16533be89a4e1",
+      "commit": "01050ea83ceebc6de71a194df8da4adaa1983f32",
       "files": {
         "plugins/dotnet-aspnet/skills/configuring-opentelemetry-dotnet/SKILL.md": {
           "blob": "c99fe5c521da77e0c76157eb37d92fd9e7c2ec70",
@@ -117,7 +117,7 @@
     },
     "wshobson/agents": {
       "ref": "main",
-      "commit": "767d969a73ce6608d10ac713e52be9ac7f061ab9",
+      "commit": "cf6059d030bf4fe96623ae2e596d2f31e35fedc0",
       "files": {
         "plugins/frontend-mobile-development/skills/tailwind-design-system/SKILL.md": {
           "blob": "17c4fd0ec99c26254e58288b7219dfe44d0a20ba",
