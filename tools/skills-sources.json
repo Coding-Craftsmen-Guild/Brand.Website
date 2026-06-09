@@ -47,24 +47,8 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "998ae280637d9a0c7f9ae414d853525c4aea069b",
+      "commit": "2d163bb6003b74973c8a6e90f06011abf502dd32",
       "files": {
-        "plugins/dotnet-aspnet/skills/configuring-opentelemetry-dotnet/SKILL.md": {
-          "blob": "c99fe5c521da77e0c76157eb37d92fd9e7c2ec70",
-          "target": ".claude/skills/dotnet-aspnet/configuring-opentelemetry-dotnet/SKILL.md"
-        },
-        "plugins/dotnet-aspnet/skills/convert-blazor-server-to-webapp/SKILL.md": {
-          "blob": "819ed43d948568f3512591a410b83e9882fb0d94",
-          "target": ".claude/skills/dotnet-aspnet/convert-blazor-server-to-webapp/SKILL.md"
-        },
-        "plugins/dotnet-aspnet/skills/dotnet-webapi/SKILL.md": {
-          "blob": "c22ba5ca10cb48dd69c53dd87cebc165d6b21a58",
-          "target": ".claude/skills/dotnet-aspnet/dotnet-webapi/SKILL.md"
-        },
-        "plugins/dotnet-aspnet/skills/minimal-api-file-upload/SKILL.md": {
-          "blob": "6ec5fc805dd5fcae95c3900b024a8c7ace0c9e0c",
-          "target": ".claude/skills/dotnet-aspnet/minimal-api-file-upload/SKILL.md"
-        },
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "69776f920023c3410f96c5361056df400373ff6a",
           "target": ".claude/agents/template-engine.md"
