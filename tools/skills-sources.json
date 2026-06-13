@@ -47,26 +47,34 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "9be44ad6e599efbd92ee3bb8106148164737f540",
+      "commit": "c8be21018fc4ee4c566ed65a313cea56690f8cab",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
-          "blob": "69776f920023c3410f96c5361056df400373ff6a",
+          "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
           "target": ".claude/agents/template-engine.md"
         },
         "plugins/dotnet-template-engine/skills/template-authoring/SKILL.md": {
-          "blob": "8a14a04c11952a8f6dfd1238c28f4375398cb432",
+          "blob": "73c1f2d2e62290afd7c355f05ec4fcb596a394d7",
           "target": ".claude/skills/dotnet-template-engine/template-authoring/SKILL.md"
         },
+        "plugins/dotnet-template-engine/skills/template-comparison/SKILL.md": {
+          "blob": "5268c29eebd06dd5d45eb20e8a3c21cdf8868a68",
+          "target": ".claude/skills/dotnet-template-engine/template-comparison/SKILL.md"
+        },
         "plugins/dotnet-template-engine/skills/template-discovery/SKILL.md": {
-          "blob": "3475af482bdb8bbf1e37d9efa710e2b27b3bc921",
+          "blob": "349246bfebcd19760e80a09350dfba3ff62a7cf8",
           "target": ".claude/skills/dotnet-template-engine/template-discovery/SKILL.md"
         },
         "plugins/dotnet-template-engine/skills/template-instantiation/SKILL.md": {
-          "blob": "c66131dc9472bc2350b368ce72146be7a0c4cb0b",
+          "blob": "fff141c50791dbaac21743c317bfa05b66c16843",
           "target": ".claude/skills/dotnet-template-engine/template-instantiation/SKILL.md"
         },
+        "plugins/dotnet-template-engine/skills/template-smart-defaults/SKILL.md": {
+          "blob": "5beea109a3f837c96b7a305d3ffdac1d49cc684f",
+          "target": ".claude/skills/dotnet-template-engine/template-smart-defaults/SKILL.md"
+        },
         "plugins/dotnet-template-engine/skills/template-validation/SKILL.md": {
-          "blob": "30845573bebdd6f6f573a625f650a6227593d2c4",
+          "blob": "d89daf3c21e22778c7c10fbdc666c809cc9e4fc1",
           "target": ".claude/skills/dotnet-template-engine/template-validation/SKILL.md"
         },
         "plugins/dotnet/skills/csharp-scripts/SKILL.md": {
