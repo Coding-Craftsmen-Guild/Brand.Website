@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "cbb6121e76273dad56e3fcda5481cf64378984a7",
+      "commit": "11c5dfc7380ac6a1ac45dd94939fd84d486c3ea7",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
@@ -113,7 +113,7 @@
     },
     "wshobson/agents": {
       "ref": "main",
-      "commit": "2b48f1690c5f60070b56d97ed6d93bded989dc73",
+      "commit": "5cc2549a50fc672230efd0a0307e2fd27ffba792",
       "files": {
         "plugins/frontend-mobile-development/skills/tailwind-design-system/SKILL.md": {
           "blob": "17c4fd0ec99c26254e58288b7219dfe44d0a20ba",
