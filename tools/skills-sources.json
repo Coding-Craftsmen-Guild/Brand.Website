@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "691cd472a108927024b575e4599d273bca62c60c",
+      "commit": "4975793af043e1f4ddd75c86778bd9bbcc94d7dd",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
@@ -76,34 +76,6 @@
         "plugins/dotnet-template-engine/skills/template-validation/SKILL.md": {
           "blob": "d89daf3c21e22778c7c10fbdc666c809cc9e4fc1",
           "target": ".claude/skills/dotnet-template-engine/template-validation/SKILL.md"
-        },
-        "plugins/dotnet/skills/csharp-scripts/SKILL.md": {
-          "blob": "8f5c41b8a3e90cd7547fb8d389b2aa2d2c6de1be",
-          "target": ".claude/skills/dotnet/csharp-scripts/SKILL.md"
-        },
-        "plugins/dotnet/skills/dotnet-pinvoke/SKILL.md": {
-          "blob": "4aa7706e36eb259c151ac0fc810c61c0254d2ed9",
-          "target": ".claude/skills/dotnet/dotnet-pinvoke/SKILL.md"
-        },
-        "plugins/dotnet/skills/dotnet-pinvoke/references/diagnostics.md": {
-          "blob": "8ab067988d9795409ce007cf21096ceb0ff6bf2d",
-          "target": ".claude/skills/dotnet/dotnet-pinvoke/references/diagnostics.md"
-        },
-        "plugins/dotnet/skills/dotnet-pinvoke/references/type-mapping.md": {
-          "blob": "b725937a372fd834f80bfcc2a0201627fbdee5c2",
-          "target": ".claude/skills/dotnet/dotnet-pinvoke/references/type-mapping.md"
-        },
-        "plugins/dotnet/skills/nuget-trusted-publishing/SKILL.md": {
-          "blob": "3ebc523f1e188dd919e4dd99b0dfab474d4c3630",
-          "target": ".claude/skills/dotnet/nuget-trusted-publishing/SKILL.md"
-        },
-        "plugins/dotnet/skills/nuget-trusted-publishing/references/package-types.md": {
-          "blob": "4c21bd6ef34443d086f87f8b5ffa2cdf0a36e7e2",
-          "target": ".claude/skills/dotnet/nuget-trusted-publishing/references/package-types.md"
-        },
-        "plugins/dotnet/skills/nuget-trusted-publishing/references/publish-workflow.md": {
-          "blob": "d74311c9fb72d1a0f85aeacb615ab4e74f416941",
-          "target": ".claude/skills/dotnet/nuget-trusted-publishing/references/publish-workflow.md"
         },
         "plugins/dotnet/skills/setup-local-sdk/SKILL.md": {
           "blob": "60f585d7776cac9084a8aa6985d314c6efd03999",
