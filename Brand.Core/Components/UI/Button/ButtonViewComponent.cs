@@ -17,7 +17,8 @@ public sealed class ButtonViewComponent : ViewComponent
         string href = "",
         string target = "",
         string variant = "primary",
-        string size = "md")
+        string size = "md"
+    )
     {
         var vm = new ButtonViewModel(
             Label: label,

@@ -33,14 +33,19 @@ The block editor's `<Config><![CDATA[…]]></Config>` block contains the list of
 ```json
 {
   "blocks": [
-    { "contentElementTypeKey": "58cd990a-e9cd-41f6-9f78-86d60e6e4790", "label": "Hero Banner - {{title}}" }
+    { "contentElementTypeKey": "58cd990a-e9cd-41f6-9f78-86d60e6e4790", "label": "Hero Banner - {=title}" }
   ]
 }
 ```
 
-`contentElementTypeKey` = the `Key` from the IsElement doctype's `.config`. `label` uses Angular-style `{{property}}` templating against the element's properties.
+`contentElementTypeKey` = the `Key` from the IsElement doctype's `.config`. `label` uses **Umbraco Flavored Markdown (UFM)**: `{=propertyAlias}` (shorthand for `{umbValue: propertyAlias}`).
 
-**Don't hand-edit this JSON.** Author the DataType in backoffice (Settings → Data Types → BlockList or BlockGrid), use its UI to add/configure blocks, save. uSync exports the resulting `.config`. Spot-fixes (typo in a label, reordering blocks) are tolerable; structural changes go through backoffice.
+**`{{angular}}` is dead — use UFM `{=alias}`.** The pre-14 backoffice used AngularJS `{{property}}` templating; Umbraco 14+ (incl. 17) removed AngularJS and that syntax now renders **literally**. The new backoffice uses UFM. Useful filters:
+- `{=title | fallback:Untitled}` — default when the property is empty
+- `{=text | truncate:50}` / `{=text | wordLimit:5}` — length limits
+- `{=body | stripHtml}` — **required** for a richtext property; UFM won't render raw richtext markup otherwise.
+
+**Don't hand-edit this JSON for structural changes.** Author the DataType in backoffice (Settings → Data Types → BlockList or BlockGrid), use its UI to add/configure blocks, save — uSync exports the resulting `.config`. Spot-fixes (a label's UFM string, reordering blocks) are tolerable directly in the `.config`; structural changes go through backoffice.
 
 ## Render path A — direct ViewComponent dispatch on the page
 

@@ -14,7 +14,7 @@ public sealed class FooterViewComponent(UmbracoHelper umbracoHelper) : ViewCompo
         var root = umbracoHelper.ContentAtRoot().OfType<IFooter>().FirstOrDefault();
 
         var vm = new FooterViewModel(Logo: root.FooterLogo);
-        
+
         return View(vm);
     }
 }

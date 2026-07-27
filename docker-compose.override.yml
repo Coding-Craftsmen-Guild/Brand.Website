@@ -3,6 +3,15 @@ services:
     build:
       target: dev
     image: brand.web:dev
+    # docker-compose.yml only `expose`s 8080 — in prod Coolify's proxy reaches the
+    # container over the compose network and publishing a host port would be wrong.
+    # Local dev has no proxy, so the port is published here instead (README's
+    # http://localhost:28080). docker-compose.local.yml `!override`s it to 28081 when
+    # two checkouts of the template need to run side by side.
+    ports:
+      - "28080:8080"
+    # The Dockerfile sets no ASPNETCORE_ENVIRONMENT — this is the single source of
+    # truth for it in local dev, mirroring docker-compose.yml's Production value.
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       DOTNET_USE_POLLING_FILE_WATCHER: "1"
@@ -18,3 +27,9 @@ services:
       - umbraco-logs:/src/Brand.Web/umbraco/Logs
       - umbraco-media:/src/Brand.Web/wwwroot/media
     command: ["dotnet", "watch", "--non-interactive", "--project", "Brand.Web/Brand.Web.csproj", "run", "--no-launch-profile"]
+
+  # The backup sidecar is prod-only. Assigning it a profile nothing activates keeps a bare
+  # `docker compose up` from pulling the private GHCR image during local dev. Coolify reads
+  # docker-compose.yml directly and never merges this override, so it still runs in prod.
+  cloud-cli:
+    profiles: ["prod-only"]

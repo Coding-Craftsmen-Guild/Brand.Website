@@ -1,6 +1,6 @@
 # Brand.Web
 
-Umbraco CMS site (.NET 10, Umbraco 17), runnable host-native or in Docker. SQLite is the default database; files live on the host under `./data/` so the DB is easy to inspect, back up, and reset.
+Umbraco CMS site (.NET 10, Umbraco 17), runnable host-native or in Docker. SQLite is the default database; in local dev the files live on the host under `./data/` so the DB is easy to inspect, back up, and reset.
 
 > The folder and assembly are named `Brand.Web` as a placeholder. Use `mise run clone-project <NewName> <DestinationPath>` to spin up a new project from this template — it copies the tracked tree, renames the placeholder, and `git init`s a fresh repo at the destination.
 
@@ -14,34 +14,36 @@ mise run setup      # restores .NET local tools (csharpier)
 mise run dev        # host-native: dotnet watch on Brand.Web
 # - or -
 mise run docker:up  # containerised: dev image with dotnet watch, http://localhost:28080
-```s
+```
 
-First boot lands you in the Umbraco install wizard. The unattended-upgrade flag is on, so subsequent boots auto-apply migrations.
+First boot installs Umbraco unattended (dev admin `admin@local` / `LocalDev1234!`, see [appsettings.Development.json](Brand.Web/appsettings.Development.json)). The unattended-upgrade flag is on, so subsequent boots auto-apply migrations.
 
 ## Project layout
 
 ```
 Brand.Web/           ASP.NET / Umbraco project
+  Client/              Vite + Tailwind v4 client sources
   Views/               Razor views
-  wwwroot/             static assets (media/ is volume-mounted)
-  umbraco/Data/        runtime data folder (bind-mounted to ./data/)
-data/                  SQLite DB lives here (host bind mount, gitignored)
+  wwwroot/             static assets (media/ is volume-mounted; dist/ is Vite output)
+  umbraco/Data/        runtime data folder (bind-mounted to ./data/ in dev)
+Brand.Core/          domain: doctype .config sources, ViewComponents, services
+data/                  dev SQLite DB lives here (host bind mount, gitignored)
+artifacts/             `mise run publish` output (gitignored)
 tools/                 repo automation (mise tasks call into here)
-Dockerfile             multi-stage: base / build / dev / runtime
-docker-compose.yml         prod-ish defaults
-docker-compose.override.yml  picked up automatically for dev (dotnet watch + bind mounts)
-docker-compose.local.yml     opt-in port override (8090) — `docker compose -f ... -f ...`
+Dockerfile             multi-stage: build (mise-driven) / dev / runtime
+docker-compose.yml           production: expose-only, named volumes, backup sidecar
+docker-compose.override.yml  picked up automatically for dev (dotnet watch + bind mounts + :28080)
+docker-compose.local.yml     opt-in port override (28081) — `docker compose -f ... -f ...`
 ```
 
 ## Database
 
-SQLite is configured in [appsettings.json](Brand.Web/appsettings.json) via Umbraco's `umbracoDbDSN` with `|DataDirectory|` substitution. Both compose files bind `./data` on the host to the container's Umbraco Data folder, so the DB file is at:
+SQLite is configured in [appsettings.json](Brand.Web/appsettings.json) via Umbraco's `umbracoDbDSN` with `|DataDirectory|` substitution.
 
-```
-./data/Umbraco.sqlite.db
-```
+- **Dev**: `docker-compose.override.yml` binds `./data` on the host to the container's Umbraco Data folder, so the DB file is at `./data/Umbraco.sqlite.db`. Host-native `mise run dev` uses `Brand.Web/umbraco/Data/Umbraco.sqlite.db` instead.
+- **Prod**: `docker-compose.yml` uses the named `umbraco-data` volume — no host bind, and the `cloud-cli` backup sidecar mounts the same volume.
 
-To reset: stop the stack and delete the file (and its `-shm` / `-wal` companions). Do **not** commit `./data/` — it's already gitignored.
+To reset dev: stop the stack and delete the file (and its `-shm` / `-wal` companions). Do **not** commit `./data/` — it's already gitignored.
 
 SQLite is single-instance only. If you ever scale `web` past one replica, switch to SQL Server or PostgreSQL by updating the connection string in `appsettings.json`.
 
@@ -53,8 +55,10 @@ All tasks are defined in [.mise.toml](.mise.toml):
 | --- | --- |
 | `mise run dev` | host-native hot reload (fastest iteration) |
 | `mise run build` | debug build |
-| `mise run format` | csharpier format |
-| `mise run format:check` | csharpier verify (CI) |
+| `mise run publish` | Release publish into `artifacts/publish` — the same task the Docker build stage runs |
+| `mise run usync:bundle` | flatten `Brand.Core/**/*.config` into `uSync/v17/ContentTypes/` + `Dictionary/` |
+| `mise run format` | csharpier + Prettier format |
+| `mise run format:check` | formatting verify (CI) |
 | `mise run docker:up` | build + start the compose stack |
 | `mise run docker:down` | stop the stack |
 | `mise run docker:logs` | tail the `web` container |

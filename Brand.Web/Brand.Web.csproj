@@ -30,6 +30,14 @@
     <Content Remove="Views\**\*.css" />
     <None Remove="Views\**\*.ts" />
     <None Remove="Views\**\*.css" />
+    <!-- MSBuild's implicit wwwroot/** content glob excludes dot-prefixed directories, and Vite 5+
+         writes its manifest to wwwroot/dist/.vite/manifest.json — without this, ViteManifest.cs finds
+         no file at runtime and <vite-asset> silently falls back to a no-op HTML comment in production. -->
+    <Content
+      Include="wwwroot\dist\.vite\**"
+      CopyToPublishDirectory="PreserveNewest"
+      Exclude="$(DefaultItemExcludes)"
+    />
   </ItemGroup>
 
   <ItemGroup>

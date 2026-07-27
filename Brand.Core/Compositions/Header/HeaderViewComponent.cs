@@ -14,7 +14,7 @@ public sealed class HeaderViewComponent(UmbracoHelper umbracoHelper) : ViewCompo
         var root = umbracoHelper.ContentAtRoot().OfType<IHeader>().FirstOrDefault();
 
         var vm = new HeaderViewModel(Logo: root.HeaderLogo);
-        
+
         return View(vm);
     }
 }
