@@ -50,7 +50,7 @@ Rules:
 
 ## Invoke signature: interface (Compositions) vs model (Components/Shared) vs primitives (Pure UI)
 
-- **Compositions** (`Brand.Core/Compositions/<Name>/`) — `Invoke` takes the generated **interface** (`IHeader`, `IFooter`). This lets any page that composes the mixin pass itself in. See [HeaderViewComponent.cs](../../../Brand.Core/Compositions/Header/HeaderViewComponent.cs).
+- **Compositions** (`Brand.Core/Compositions/<Name>/`) — `Invoke` takes the generated **interface** (`IHeader`, `IFooter`). This lets any page that composes the mixin pass itself in. See [HeaderViewComponent.cs](../../../Brand.Core/Compositions/Header/HeaderViewComponent.cs). **Caveat — the interface is generated lazily:** ModelsBuilder only emits `I<Name>` once another doctype actually composes the mixin. A brand-new composition with no consumer yet has **no** `I<Name>`, so `Invoke(I<Name> source)` fails to compile (`CS0246`). Until a consumer exists, either take the concrete `Models.<Name>` temporarily, or author the consumer first and regenerate — then switch to the interface. (Consumers that are element blocks force the composition to `IsElement=true`; see [usync-author](../usync-author/SKILL.md) `## IsElement and compositions`.)
 - **Page-scoped Components** (`Brand.Core/Components/<Page>/<Name>/`, `IsElement=true`) — `Invoke` takes the generated **class** (`Models.HeroBanner`). Elements aren't shared; the concrete type is fine.
 - **Shared blocks** (`Brand.Core/Shared/<Name>/`, `IsElement=true`) — same as page-scoped Components: `Invoke` takes the generated class via `Models.<Name>`.
 - **Pure UI** (`Brand.Core/Components/UI/<Name>/`) — `Invoke` takes **plain primitives** passed by the caller (e.g. `Invoke(string label, string href = "", string variant = "primary", string size = "md")`). No `source` parameter, no `Models.X` reference, no generated model exists. See [ButtonViewComponent.cs](../../../Brand.Core/Components/UI/Button/ButtonViewComponent.cs) for the canonical example.
@@ -87,6 +87,17 @@ The `<ComponentName>` folder matches the class name minus the `ViewComponent` su
 
 `Brand.Web/Views/_ViewImports.cshtml` already imports the relevant namespaces — confirm before adding fully-qualified `@model` references.
 
+## Tailwind class conventions (Razor markup)
+
+Styling in `Default.cshtml` (and any view partial) is **utility-first Tailwind v4** — components don't ship a `.scss`. Follow the canonical forms; the `bradlc.vscode-tailwindcss` extension flags non-canonical classes as `suggestCanonicalClasses` warnings, and a clean file has none.
+
+- **CSS variables** — use the bare `(--var)` shorthand, never `[var(--var)]`: `px-(--gutter)`, `max-w-(--container)`, `gap-(--s-6)`. (The `--s-*`, `--gutter`, `--container` layout vars live in [tokens.scss](../../../Brand.Web/Client/tokens/tokens.scss) `:root`; the `--color-brand-*` / `--font-*` / `--radius-*` design tokens are `@theme` and resolve to real utilities like `text-brand-ink`, `font-display`, `rounded-sm`.)
+- **Spacing — use the dynamic scale, not arbitrary px.** Tailwind v4 generates any multiple of the `0.25rem` base on demand, so divide px by 4: `14px → gap-3.5`, `18px → py-4.5`, `38px → w-9.5`, `3px → -bottom-0.75`, `160px → min-w-40`. Never write `gap-[14px]`.
+- **Breakpoints — mobile-first named breakpoints, never arbitrary `max-[1000px]`.** Author the mobile layout as the default and add `lg:` overrides for desktop (`hidden lg:flex`, `flex lg:hidden`, `grid-cols-[auto_1fr_auto] lg:grid-cols-[auto_1fr_auto_auto]`). For the rare style that must be scoped to *below* a breakpoint, use the named max variant (`max-lg:…`) — not a pixel literal.
+- **JS-driven state — data attributes, not marker classes.** Component scripts toggle clean `data-*` attributes (e.g. [header.ts](../../../Brand.Web/Views/Shared/Components/Header/header.ts) sets `data-scroll` / `data-open` via `toggleAttribute`). Style them with: `data-scroll:…` (the element itself), `in-data-scroll:…` (any descendant of an ancestor carrying the attr), and `group-data-open/<name>:…` (a `group/<name>`-scoped ancestor, when a bare `in-*` would collide with the same attr elsewhere). Prefer this over `is-*` classes.
+- **Conditional classes** — compose with `@Html.Cn(base, cond ? extra : "")` ([HtmlClassExtensions.cs](../../../Brand.Web/Extensions/HtmlClassExtensions.cs)), which runs TailwindMerge so a later class wins a conflict (`after:scale-x-0` + `after:scale-x-100` → `100`).
+- **Keep arbitrary `[…]` only where no token or scale exists** — off-scale font sizes (`text-[9.5px]`), `tracking-[0.22em]`, `leading-[1.15]`, `shadow-[…]`, `top-[calc(100%+8px)]`, `backdrop-blur-[14px]`.
+
 ## Custom template discovery (pages)
 
 A page template can live at either `Views/<Alias>.cshtml` (default) or `Views/<Alias>/<Alias>.cshtml` (preferred — keeps related view files together). The second location is enabled by [Brand.Web/ViewLocations/DoctypeFolderViewLocationExpander.cs](../../../Brand.Web/ViewLocations/DoctypeFolderViewLocationExpander.cs), registered in `Program.cs`. Example: [Brand.Web/Views/HomePage/HomePage.cshtml](../../../Brand.Web/Views/HomePage/HomePage.cshtml).
@@ -113,6 +124,19 @@ Not every doctype needs one:
 - **Pages** rendered via their template (`Views/<Alias>/<Alias>.cshtml`) — no VC needed unless the page is also embedded as a fragment elsewhere.
 - **Settings-only compositions** (e.g. `GlobalSettings`) that hold properties but have no render output of their own — the consumer reads `source.SomeProperty` directly in its template/VM.
 - **DataTypes, MediaTypes, MemberTypes, Templates** — these are not DocumentTypes; no render layer applies.
+- **Wrappers that need to accept Razor children** — a ViewComponent **cannot** take a Razor child body (`Component.InvokeAsync` has no child slot). Use a **Tag Helper** instead. The canonical case is section chrome: see below.
+
+## Section chrome — use a `<section-block>` tag helper, not a ViewComponent
+
+When you build reusable section chrome (an outer `<section>` + optional full-bleed background image + scrim, or a plain light section + bottom border, plus the inner `wrapper` container), render it with a **Tag Helper** in `Brand.Web/TagHelpers/`, **not** a ViewComponent — because only a tag helper can wrap arbitrary Razor children. The block partial then wraps its content:
+
+```cshtml
+<section-block bg-image="@(Model.Background?.Url())" data-component="my-block">
+    @* ...arbitrary Razor children, other Component.InvokeAsync calls, etc... *@
+</section-block>
+```
+
+Design notes for such a tag helper: branch the chrome on whether `bg-image` is set (dark full-bleed + scrim vs plain light + border); TwMerge the passed-through `class`; let other attributes (`id`, `data-component`, `aria-*`) pass through and default `data-component` only when unset; have it own the first-block header offset (read/clear `HttpContext.Items["IsFirstComponent"]`) so callers don't also call `Html.HeaderOffset()`. The `background` field is supplied by a `Section` composition mixin that the block composes.
 
 ## When to invoke this skill
 

@@ -2,12 +2,16 @@ import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath } from 'node:url';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [tailwindcss()],
   root: '.',
-  // `base` intentionally left at the default ('/'). Dev server serves /@vite/client + /Client/main.ts
-  // from root. In prod, the ViteAssetTagHelper hardcodes the '/dist/' prefix when reading the manifest
-  // (paths in manifest.json are relative to outDir).
+  // Build-only: wwwroot/dist is served under '/dist/' in prod, not at site root. Vite uses `base` to
+  // resolve asset URLs it rewrites itself (CSS url(), font references, dynamic imports) — manifest.json
+  // entries stay outDir-relative regardless, so ViteAssetTagHelper's manual '/dist/' prefix for entry
+  // <script>/<link> tags is unaffected. Left at the default ('/') for the dev server, since
+  // ViteAssetTagHelper fetches /@vite/client and the entry module straight from DevServer with no
+  // '/dist/' prefix.
+  base: command === 'build' ? '/dist/' : '/',
 
   resolve: {
     alias: {
@@ -38,4 +42,4 @@ export default defineConfig({
     origin: 'http://localhost:5173',
     cors: true,
   },
-});
+}));

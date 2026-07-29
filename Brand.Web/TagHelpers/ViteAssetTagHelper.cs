@@ -58,9 +58,7 @@ public sealed class ViteAssetTagHelper : TagHelper
             {
                 foreach (var css in entry.Css)
                 {
-                    sb.Append("<link rel=\"stylesheet\" href=\"/dist/")
-                        .Append(css)
-                        .Append("\">\n");
+                    sb.Append("<link rel=\"stylesheet\" href=\"/dist/").Append(css).Append("\">\n");
                 }
             }
 

@@ -32,6 +32,11 @@ description = "Run Umbraco without watch (prod-like, uses pre-built Vite bundle)
 run = "dotnet run --project Brand.Web/Brand.Web.csproj"
 depends = ["usync:bundle", "client:build"]
 
+[tasks.publish]
+description = "Publish the Release build of Brand.Web into artifacts/publish (bundles uSync + client, restores NuGet first). Single source of truth for the Docker build stage."
+run = "dotnet publish Brand.Web/Brand.Web.csproj -c Release -o artifacts/publish --no-restore /p:UseAppHost=false"
+depends = ["usync:bundle", "client:build", "restore"]
+
 [tasks.format]
 description = "Format all code (C# via csharpier + TS/CSS/JSON via Prettier)."
 depends = ["client:format"]
@@ -72,7 +77,7 @@ run = "bash tools/clone-project.sh"
 run_windows = 'C:\PROGRA~1\Git\bin\bash.exe tools/clone-project.sh'
 
 [tasks."usync:bundle"]
-description = "Flat-copy all *.config under Brand.Core/{Components,Compositions,Pages} into Brand.Web/uSync/v17/ContentTypes/ so uSync's startup import can apply them."
+description = "Flat-copy *.config under Brand.Core into uSync/v17/, routed by folder: files under a Dictionary/ folder go to Dictionary/, everything else to ContentTypes/, so uSync's startup import can apply them."
 run = "bash tools/usync-bundle.sh"
 run_windows = 'C:\PROGRA~1\Git\bin\bash.exe tools/usync-bundle.sh'
 

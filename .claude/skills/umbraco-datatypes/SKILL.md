@@ -26,12 +26,27 @@ This is the inverse of DocumentTypes. Per [appsettings.json](../../../Brand.Web/
 - **Dev**: `ExportOnSave: "Settings"` — same effect for DataTypes (Settings handlers include `DataTypeHandler`).
 - `DataTypes/` is **tracked in git** (unlike `ContentTypes/`). It IS the source of truth.
 
-**Authoring workflow:**
+**Authoring workflow (two paths):**
+
+**Backoffice (preferred, and required for complex editors):**
 1. Open the backoffice → Settings → Data Types → create/edit.
 2. uSync auto-exports to [Brand.Web/uSync/v17/DataTypes/](../../../Brand.Web/uSync/v17/DataTypes/).
 3. Commit the new/changed `.config` alongside whatever doctype change consumes it.
 
-Do **not** hand-author DataType `.config` XML. Always go through the backoffice. uSync's GUID generation, editor schema, and config JSON shape are easy to get subtly wrong, and the round-trip via backoffice gives a working file every time.
+**Hand-authoring (OK for simple option-set / single-knob editors):** You *may* hand-write a DataType `.config` when it's a straightforward flexible dropdown / radio / checkbox list whose only config is a fixed item list, or a picker whose only config is a limit. Model it **exactly** on an existing tracked file with the same `EditorAlias` — [Dropdown.config](../../../Brand.Web/uSync/v17/DataTypes/Dropdown.config) is the flexible-dropdown shape (`"multiple": false` + an `"items": [...]` string array); [SingleURLPicker.config](../../../Brand.Web/uSync/v17/DataTypes/SingleURLPicker.config) is the canonical one-knob picker (`"maxNumber": 1`). Steps:
+1. Run the GUID-uniqueness check (below) for the new `Key`.
+2. Copy the structure of the model file; keep `EditorAlias` + `EditorUIAlias` identical; change only `Key`, `Alias`, `Name`, and the config values.
+3. Commit alongside the consuming doctype. On next boot uSync imports it like any other DataType.
+
+**Still go through the backoffice** for editors with non-trivial config JSON — Block List/Grid (element-type whitelists, block schema), Image Cropper (crop definitions), Approved Color palettes, anything with nested structure. That JSON is painful to hand-write correctly; let the backoffice generate it.
+
+### GUID uniqueness for a hand-authored DataType
+
+Same mandatory rule as DocumentTypes. Generate a v4 GUID and prove it's globally unique before using it as `Key`:
+```bash
+grep -rl --include="*.config" "<candidate-guid>" Brand.Core/ Brand.Web/uSync/
+```
+Silent = safe. Any hit = discard and regenerate.
 
 ## Index — DataTypes currently tracked
 
@@ -78,6 +93,7 @@ Authoritative list lives in [Brand.Web/uSync/v17/DataTypes/](../../../Brand.Web/
 | ContentPicker.config | `Umbraco.ContentPicker` | pick a Content node |
 | MemberPicker.config | `Umbraco.MemberPicker` | pick a Member |
 | MultiURLPicker.config | `Umbraco.MultiUrlPicker` | array of internal/external links (returns `IEnumerable<Link>`) |
+| SingleURLPicker.config | `Umbraco.MultiUrlPicker` | exactly one link (`maxNumber: 1`) — CTA targets, "read more" |
 
 ### Media
 

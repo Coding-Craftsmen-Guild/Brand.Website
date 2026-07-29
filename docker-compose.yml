@@ -3,19 +3,71 @@ services:
     build:
       context: .
       target: runtime
-    image: brand.web:latest
-    ports:
-      - "28080:8080"
+    image: 'brand.web:latest'
+    expose:
+      - '8080'
+    # The Dockerfile deliberately sets no ASPNETCORE_ENVIRONMENT — this is the
+    # single source of truth for it locally; Coolify supplies it the same way in prod.
     environment:
+      Umbraco__CMS__Hosting__LocalTempStorageLocation: EnvironmentTemp
       ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_URLS: 'http://+:8080'
     volumes:
-      - ./data:/app/umbraco/Data
-      - ./usync:/app/uSync
-      - umbraco-logs:/app/umbraco/Logs
-      - umbraco-media:/app/wwwroot/media
+      - 'umbraco-data:/app/umbraco/Data'
+      - 'umbraco-logs:/app/umbraco/Logs'
+      - 'umbraco-media:/app/wwwroot/media'
     restart: unless-stopped
+    stop_grace_period: 30s
+
+  # Backup + health-check sidecar (github.com/Coding-Craftsmen-Guild/cloud-backup-agent).
+  # It runs `idle` purely to stay alive; Coolify Scheduled Tasks exec the real commands in:
+  #
+  #   cloud-cli backup        0 2 * * *     (daily 02:00)
+  #   cloud-cli healthcheck   * * * * *     (every minute)
+  #
+  # Both report to Slack and exit non-zero on failure, so Coolify's scheduled-task alerting
+  # fires as well. Secrets (Azure, Slack) and SITE_URL come from Coolify env vars — never commit them.
+  cloud-cli:
+    image: 'ghcr.io/coding-craftsmen-guild/cloud-cli:latest'
+    command: ['idle']
+    environment:
+      Project__Name: brand              # -> archives land under projects/brand/
+      Project__Environment: production
+
+      Storage__ConnectionString: ${AZURE_STORAGE_CONNECTION_STRING}
+      Storage__Container: coolify-backups
+      Storage__BaseFolder: projects
+
+      # Each Name is a top-level folder inside the run's zip.
+      Backups__0__Name: media
+      Backups__0__Provider: FileSystem
+      Backups__0__Source: /backup/media
+
+      Backups__1__Name: db
+      Backups__1__Provider: Sqlite
+      Backups__1__Source: /backup/data/Umbraco.sqlite.db
+
+      Retention__Enabled: 'true'
+      Retention__KeepLast: '14'
+      Retention__MinKeep: '3'
+      Retention__DryRun: 'false'
+
+      Slack__WebhookUrl: ${SLACK_WEBHOOK_URL}
+      Slack__NotifyOnSuccess: 'true'
+
+      HealthCheck__Targets__0__Name: public-site
+      HealthCheck__Targets__0__Url: ${SITE_URL}
+      HealthCheck__Targets__0__ExpectedStatus: '200'
+    volumes:
+      # The same named volumes `web` mounts, seen from the backup side.
+      - 'umbraco-media:/backup/media:ro'
+      # rw is REQUIRED, not an oversight: SQLite is in WAL mode and the online-backup API
+      # must create/read the -wal/-shm sidecars, which needs a writable directory.
+      - 'umbraco-data:/backup/data:rw'
+    restart: unless-stopped
+    stop_grace_period: 30s
 
 volumes:
+  umbraco-data:
   umbraco-logs:
   umbraco-media:

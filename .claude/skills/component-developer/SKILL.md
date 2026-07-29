@@ -34,7 +34,7 @@ When unsure between page-scoped and shared, **start page-scoped**. Promotion to 
 
 | Bucket | Folder | `.config`? | DataTypes? | Block-listable? | Skills to invoke (in order) |
 |---|---|---|---|---|---|
-| Pure UI | `Brand.Core/Components/UI/<Name>/` | No | No | No | umbraco-viewcomponent (ViewComponent + Variants + partial only) |
+| Pure UI | `Brand.Core/Components/UI/<Name>/` | No | No | No | umbraco-viewcomponent (ViewComponent + partial; Variants only if it has variant logic) |
 | Page-scoped block | `Brand.Core/Components/<Page>/<Name>/` | Yes (IsElement=true) | Yes | Yes | umbraco-datatypes → usync-author → umbraco-blocks → umbraco-viewcomponent |
 | Shared block | `Brand.Core/Shared/<Name>/` | Yes (IsElement=true) | Yes | Yes (across pages) | umbraco-datatypes → usync-author → umbraco-blocks → umbraco-viewcomponent |
 | Site-wide composition | `Brand.Core/Compositions/<Name>/` | Yes (IsElement=false mixin) | Yes | No | umbraco-datatypes → usync-author → umbraco-viewcomponent (interface-based `Invoke`) |
@@ -44,8 +44,8 @@ When unsure between page-scoped and shared, **start page-scoped**. Promotion to 
 Pure UI components are plain Razor ViewComponents with no Umbraco backing — they're invoked inline by other components.
 
 1. Create `Brand.Core/Components/UI/<Name>/<Name>ViewComponent.cs` with `namespace Brand.Core.Components.UI.<Name>;`. Define a `sealed record <Name>ViewModel(...)` and a `sealed class <Name>ViewComponent : ViewComponent` whose `Invoke(...)` takes primitive parameters (caller passes them).
-2. Create `Brand.Core/Components/UI/<Name>/<Name>Variants.cs` next to it — `public static class <Name>Variants` with a `Base` constant and `Variant(string)` / `Size(string)` methods. Tailwind picks the class strings up automatically via the `@source "../../Brand.Core/**/*.cs"` scan in [Brand.Web/Client/main.css](../../../Brand.Web/Client/main.css).
-3. Create the partial at `Brand.Web/Views/Shared/Components/<Name>/Default.cshtml` with `@model Brand.Core.Components.UI.<Name>.<Name>ViewModel` and `@using Brand.Core.Components.UI.<Name>`. Compose classes via `@Html.Cn(<Name>Variants.Base, ...)`.
+2. **(Only if the component has real variant logic)** Create `Brand.Core/Components/UI/<Name>/<Name>Variants.cs` — `public static class <Name>Variants` with a `Base` constant and `Variant(string)` / `Size(string)` methods. Tailwind picks the class strings up automatically via the `@source "../../Brand.Core/**/*.cs"` scan in [Brand.Web/Client/main.css](../../../Brand.Web/Client/main.css). **Skip this file when the markup just needs static classes** — write them inline in the `.cshtml` instead (Tailwind scans `.cshtml` too). Don't add a Variants file for its own sake.
+3. Create the partial at `Brand.Web/Views/Shared/Components/<Name>/Default.cshtml` with `@model Brand.Core.Components.UI.<Name>.<Name>ViewModel` and `@using Brand.Core.Components.UI.<Name>`. Compose classes inline, or via `@Html.Cn(<Name>Variants.Base, ...)` when a Variants class exists.
 4. (Optional) Co-locate `<name>.ts` / `<name>.scss` next to the partial under `Brand.Web/Views/Shared/Components/<Name>/` for interactive behaviour and component-scoped styles. Vite picks them up via the glob in `main.ts`.
 
 No `.config`, no bundling, no DataTypes, no block editor wiring. Reference: [Button](../../../Brand.Core/Components/UI/Button/) is the canonical pure-UI example.
