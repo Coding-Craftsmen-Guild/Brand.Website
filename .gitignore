@@ -392,8 +392,11 @@ test-results/
 .AppleDouble
 .LSOverride
 
-# Icon must end with two \r
-Icon
+# The macOS resource-fork file is named "Icon" followed by a CR. Those CRs do not
+# survive line-ending normalisation, and a bare `Icon` pattern then matches any
+# *directory* named Icon too — which silently excluded Components/UI/Icon/ from
+# commits. `Icon?` matches Icon+CR without matching a plain `Icon/` folder.
+Icon?
 
 
 # Thumbnails

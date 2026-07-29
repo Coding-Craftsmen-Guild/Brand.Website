@@ -1,0 +1,9 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<StandardPage>
+
+@if (Model.Components?.Any() == true)
+{
+    foreach (var block in Model.Components)
+    {
+        @await Component.InvokeAsync(block.Content.ContentType.Alias.ToFirstUpper(), new { source = block.Content })
+    }
+}

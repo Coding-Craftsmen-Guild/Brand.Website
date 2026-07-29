@@ -16,4 +16,10 @@
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 1rem;
+
+  /* Layout scaffolding consumed by the `wrapper` utility and `<section-block>`.
+     Retune per project; the names are what the render layer depends on. */
+  --spacing-header: 5rem;
+  --spacing-gutter: clamp(20px, 4vw, 56px);
+  --container-site: 80rem;
 }

@@ -13,7 +13,8 @@ public sealed class HeaderViewComponent(UmbracoHelper umbracoHelper) : ViewCompo
     {
         var root = umbracoHelper.ContentAtRoot().OfType<IHeader>().FirstOrDefault();
 
-        var vm = new HeaderViewModel(Logo: root.HeaderLogo);
+        // root is null on a fresh install, before any content exists
+        var vm = new HeaderViewModel(Logo: root?.HeaderLogo);
 
         return View(vm);
     }

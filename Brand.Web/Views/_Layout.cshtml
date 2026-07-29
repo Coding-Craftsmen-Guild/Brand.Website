@@ -14,7 +14,11 @@
     <render-script position="BodyTop"></render-script>
     @await Component.InvokeAsync("Header")
 
-    @RenderBody()
+    @* The header is fixed and takes no flow space — every page's first block is a
+       full-bleed band that pads against it itself. *@
+    <main>
+        @RenderBody()
+    </main>
 
     @await Component.InvokeAsync("Footer")
     <render-script position="BodyBottom"></render-script>

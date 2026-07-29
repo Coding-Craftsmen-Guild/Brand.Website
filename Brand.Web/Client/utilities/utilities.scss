@@ -1,0 +1,12 @@
+/* Cross-cutting layout utilities, exposed as Tailwind `@utility` so they compose with
+   variants and stay TwMerge-aware.
+   Note: keep `@apply` preludes free of the `color/opacity` slash syntax — Sass compiles
+   this file before Tailwind sees it, and a bare `/` in an at-rule prelude is a hazard.
+   Write translucent colours as plain declarations instead. */
+
+/* The centred, gutter-padded content column. `<section-block>` wraps its children in
+   this, and full-bleed bands use it for their inner column. */
+@utility wrapper {
+  @apply mx-auto w-full px-gutter;
+  max-width: var(--container-site);
+}

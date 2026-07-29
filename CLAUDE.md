@@ -66,8 +66,9 @@ Client-side build is Vite-driven, owned entirely by [Brand.Web/](Brand.Web/). Ou
   - `main.css` — Tailwind v4 entry + `@source` scans (`.cshtml`, `.ts`, `.cs` in Brand.Core) + token/base/typography `@import`s (which resolve to `.scss` partials via Vite)
   - `lib/component.ts` — `defineComponent(selector, init)` idempotent DOM-binding primitive
   - `tokens/`, `base/`, `typography/`, `assets/`, `fonts/` — design-system globals (SCSS)
+  - `utilities/utilities.scss` — cross-cutting `@utility` definitions (currently `wrapper`, the centred gutter-padded content column). These are Tailwind utilities, so they compose with variants and are TwMerge-aware. **Keep `@apply` preludes free of the `color/opacity` slash syntax** — Sass compiles this file before Tailwind sees it and a bare `/` in an at-rule prelude is a hazard; write translucent colours as plain declarations.
 - [Brand.Web/Views/Shared/Components/{Name}/](Brand.Web/Views/Shared/Components/Header/) — co-located per-component `*.ts` / `*.scss` next to `Default.cshtml`. **Just drop a file in; no registration.** Vite picks it up via `import.meta.glob('../Views/**/*.{ts,scss}', { eager: true })` in `main.ts`.
-- [Brand.Web/TagHelpers/](Brand.Web/TagHelpers/) — `<vite-asset>` tag helper + `ViteManifest` singleton
+- [Brand.Web/TagHelpers/](Brand.Web/TagHelpers/) — `<vite-asset>` tag helper + `ViteManifest` singleton, and `<section-block>` (see `### Component taxonomy`)
 - [Brand.Web/Extensions/](Brand.Web/Extensions/) — `@Html.Cn(...)` (backed by TailwindMerge.NET) for conflict-resolving class composition
 - `Brand.Core/<bucket>/<Name>/<Name>Variants.cs` — **optional** cva-style variants helper; **only** when a component has actual reused variant logic (theme/size/state branches). Default to writing classes inline in the `.cshtml` (Tailwind scans `.cshtml` too). When a helper is warranted, its class strings are scanned by Tailwind via `@source "../../Brand.Core/**/*.cs"`. Canonical examples of components that earn one: [HeaderVariants.cs](Brand.Core/Compositions/Header/HeaderVariants.cs) (composition) and [ButtonVariants.cs](Brand.Core/Components/UI/Button/ButtonVariants.cs) (pure-UI). See `### Authoring conventions` for the rule.
 
@@ -189,7 +190,13 @@ Rules:
 - Razor partials always live at `Brand.Web/Views/Shared/Components/<Name>/Default.cshtml` regardless of bucket — ViewComponent discovery is by class name, not source folder.
 - Pure-UI components have **no** `.config`, **no** entry in any block editor DataType, and are invoked inline (`Component.InvokeAsync("Button", new { ... })`).
 - Compositions take an **interface** in `Invoke(IHeader source)`; `Components/<Page>/<Name>/` and `Shared/<Name>/` element types take the **class** as `Invoke(Models.X source)`; pure UI takes plain primitives. (Composition interfaces are generated lazily — see the bootstrap-ordering note.)
-- **Wrap section chrome with a `<section-block>` tag helper, not hand-rolled `<section>` markup**, when you add one. A tag helper (unlike a ViewComponent) accepts Razor children, so it can render the standard outer chrome — surface + optional full-bleed background image + scrim, or a plain light section with a bottom border when there's no image — plus the inner `wrapper`, around arbitrary block content. Pass `bg-image="@(Model.Background?.Url())"`; pass `class`/`id`/`data-*` through (TwMerge the `class`). Have it own the first-block header offset.
+- **Wrap section chrome in the `<section-block>` tag helper, never hand-rolled `<section>` markup.** A tag helper (unlike a ViewComponent) accepts Razor children, so it renders the standard outer chrome around arbitrary block content. It has two modes:
+  - default (omit `variant`) — `relative isolate py-24 max-[700px]:py-12` plus an inner `.wrapper` div wrapped around the children. Spacing lives **inside** a section as padding, never as section-to-section margin, so blocks reorder without doubling or collapsing gaps.
+  - `variant="full-bleed"` — no container and no padding; the component owns its own spacing. For edge-to-edge bands (heroes, image banners) that pad against the header themselves.
+
+  `class`/`id`/`data-*` written on the element pass through to the `<section>`, and `class` is folded in via TwMerge so per-instance overrides win. Set `data-component="x"` yourself when the component needs its own hook; otherwise it defaults to `section`.
+
+  It deliberately carries **no header-offset handshake**. Add one only if your site's header takes flow space; a `fixed` transparent header over a full-viewport first band needs no offset.
 - **Design-system radius scale is overridden** in [tokens.scss](Brand.Web/Client/tokens/tokens.scss) (`--radius-*` only). Stick to the mapped `rounded-*` steps; raw Tailwind steps that aren't defined as tokens (e.g. `rounded-2xl`/`rounded-3xl`) are **unmapped** and won't render the brand radius.
 
 ## uSync

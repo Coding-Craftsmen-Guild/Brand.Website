@@ -1,5 +1,6 @@
 using Brand.Core.Localization;
 using Brand.Core.Notifications;
+using Brand.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Umbraco.Cms.Core.Notifications;
@@ -14,6 +15,10 @@ public static class CoreRegistrationExtensions
             UmbracoApplicationStartedNotification,
             EnsurePageTemplatesHandler
         >();
+
+        // Navigation is derived from the content tree — nothing to author, and moving a
+        // page updates both the nav and its breadcrumb trail.
+        builder.Services.AddScoped<INavigationService, NavigationService>();
 
         // Localization read layer: one dictionary-backed IStringLocalizer shared by
         // DataAnnotations (via the factory), ILocalizer (C#) and @Html.T (Razor).
