@@ -85,7 +85,7 @@
     },
     "wshobson/agents": {
       "ref": "main",
-      "commit": "2b49247f1347d9cbd90edf869e5412563c3945cf",
+      "commit": "d82998e7df393c671ede2387a8435075f0b633f5",
       "files": {
         "plugins/frontend-mobile-development/skills/tailwind-design-system/SKILL.md": {
           "blob": "17c4fd0ec99c26254e58288b7219dfe44d0a20ba",
