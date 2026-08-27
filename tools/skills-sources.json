@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "1b896e91feb0f613cb54a914f1efd2897810ae02",
+      "commit": "7e5b5989f636074d529988358e21caaa99868d45",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
@@ -62,7 +62,7 @@
           "target": ".claude/skills/dotnet-template-engine/template-comparison/SKILL.md"
         },
         "plugins/dotnet-template-engine/skills/template-discovery/SKILL.md": {
-          "blob": "1bfd951b6c3f96d962acd6725f5fe191defc95f8",
+          "blob": "2bf2b35177ad69fb631083b5482dfdd105b17815",
           "target": ".claude/skills/dotnet-template-engine/template-discovery/SKILL.md"
         },
         "plugins/dotnet-template-engine/skills/template-instantiation/SKILL.md": {
@@ -85,7 +85,7 @@
     },
     "wshobson/agents": {
       "ref": "main",
-      "commit": "d82998e7df393c671ede2387a8435075f0b633f5",
+      "commit": "38e19c20d2b154510b0e624a2e3e186b19b5c527",
       "files": {
         "plugins/frontend-mobile-development/skills/tailwind-design-system/SKILL.md": {
           "blob": "17c4fd0ec99c26254e58288b7219dfe44d0a20ba",
