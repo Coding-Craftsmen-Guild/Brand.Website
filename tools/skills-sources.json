@@ -47,34 +47,34 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "d68dd70857076a17d4b418649bbcd20a315d59c3",
+      "commit": "34950f875e1db782ab97417bfb6e44d1c4a9acf9",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
           "target": ".claude/agents/template-engine.md"
         },
         "plugins/dotnet-template-engine/skills/template-authoring/SKILL.md": {
-          "blob": "678b6da00110725917c87d522dacffd4e8e57102",
+          "blob": "3e12586c984d3dffcfa30739941b73527223b1a8",
           "target": ".claude/skills/dotnet-template-engine/template-authoring/SKILL.md"
         },
         "plugins/dotnet-template-engine/skills/template-comparison/SKILL.md": {
-          "blob": "a1de28e4eca3851d2bf1c57c48144c42484448f8",
+          "blob": "f63443f8781f9a8a81a4f9621a7bfe9ec0a24e69",
           "target": ".claude/skills/dotnet-template-engine/template-comparison/SKILL.md"
         },
         "plugins/dotnet-template-engine/skills/template-discovery/SKILL.md": {
-          "blob": "2bf2b35177ad69fb631083b5482dfdd105b17815",
+          "blob": "7f4787431e41dff186af803c42411c7e821f62f8",
           "target": ".claude/skills/dotnet-template-engine/template-discovery/SKILL.md"
         },
         "plugins/dotnet-template-engine/skills/template-instantiation/SKILL.md": {
-          "blob": "b113f4ffaf2c312cbe1d6abd3a9b5deccfb18dd6",
+          "blob": "b5d3f71345c542e4e45421aecbf6dc406efe3e05",
           "target": ".claude/skills/dotnet-template-engine/template-instantiation/SKILL.md"
         },
         "plugins/dotnet-template-engine/skills/template-smart-defaults/SKILL.md": {
-          "blob": "e354544a77a661cd68a5be7b1904f1513d69fa9c",
+          "blob": "afac839416b8846a6ee944686a4ec4e72961ed9c",
           "target": ".claude/skills/dotnet-template-engine/template-smart-defaults/SKILL.md"
         },
         "plugins/dotnet-template-engine/skills/template-validation/SKILL.md": {
-          "blob": "667ab1d06a1ce8cf2d17837c319325f39f9e301c",
+          "blob": "ffeb2201364d71cbb3990d6a91999d90eee2cc03",
           "target": ".claude/skills/dotnet-template-engine/template-validation/SKILL.md"
         },
         "plugins/dotnet/skills/setup-local-sdk/SKILL.md": {
