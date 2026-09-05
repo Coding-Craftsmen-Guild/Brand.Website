@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "cb9651deaec17d182658118a9313161e67bf4ed8",
+      "commit": "ac8f41264bdd557e58924a3110eea8e0917dcf4d",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
