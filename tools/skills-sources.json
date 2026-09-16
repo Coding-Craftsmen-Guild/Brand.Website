@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "43dec99816ae6bfafae082698a01437d237a3f90",
+      "commit": "874ff14cff1015104cf343ed480a6879020b4820",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
@@ -76,6 +76,14 @@
         "plugins/dotnet-template-engine/skills/template-validation/SKILL.md": {
           "blob": "ffeb2201364d71cbb3990d6a91999d90eee2cc03",
           "target": ".claude/skills/dotnet-template-engine/template-validation/SKILL.md"
+        },
+        "plugins/dotnet/skills/csharp-refactoring/SKILL.md": {
+          "blob": "2be351105ef2f8b4cfdc1446d16d234bcc5cc5df",
+          "target": ".claude/skills/dotnet/csharp-refactoring/SKILL.md"
+        },
+        "plugins/dotnet/skills/csharp-refactoring/references/operation-catalog.md": {
+          "blob": "340eed23a741c817aff916db52ecc28f292c0a34",
+          "target": ".claude/skills/dotnet/csharp-refactoring/references/operation-catalog.md"
         },
         "plugins/dotnet/skills/setup-local-sdk/SKILL.md": {
           "blob": "60f585d7776cac9084a8aa6985d314c6efd03999",
