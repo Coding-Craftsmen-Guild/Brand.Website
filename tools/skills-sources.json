@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "a55fbf42c36a37b94ec07291bd79cb6b6bf3a04d",
+      "commit": "b649b55a32cbd5ba32964e818bb0799ed3bcbbcd",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
@@ -111,38 +111,38 @@
     },
     "antfu/skills": {
       "ref": "main",
-      "commit": "e98e476e315f068f72d53bd3afb34fdd4d5851c3",
+      "commit": "d02c48452d782231e4c32d7069cde731a4c7db42",
       "files": {
         "skills/vite/GENERATION.md": {
-          "blob": "a4b1c4a09943ed8409fec9b35c6756baa4f0b8ec",
+          "blob": "747d8981055d1ad6c6ca4e8bcec4696c1e66fcc1",
           "target": ".claude/skills/antfu/vite/GENERATION.md"
         },
         "skills/vite/SKILL.md": {
-          "blob": "0a00766707f8ef020c76b961a5a496d2544fafba",
+          "blob": "fb1127201f9fe29a63ea1ce7c4e8ff27e670c7a4",
           "target": ".claude/skills/antfu/vite/SKILL.md"
         },
         "skills/vite/references/build-and-ssr.md": {
-          "blob": "ac46a9a4979244b91fc8b891f46c514ad07c0473",
+          "blob": "ffc30f554b8b61bad0596ee788a0c3f77fd48643",
           "target": ".claude/skills/antfu/vite/references/build-and-ssr.md"
         },
         "skills/vite/references/core-config.md": {
-          "blob": "039ba52e89e831a08211e537f5f45014aba1c170",
+          "blob": "5dd47dc2935688e466538fdcfe5a4f6dc2e745e5",
           "target": ".claude/skills/antfu/vite/references/core-config.md"
         },
         "skills/vite/references/core-features.md": {
-          "blob": "1403ac9aea3efa8b7e6eabf6d3dafaff13e4c72f",
+          "blob": "e19c4a7e83d8d42940d7766008ef2b3a1d33b323",
           "target": ".claude/skills/antfu/vite/references/core-features.md"
         },
         "skills/vite/references/core-plugin-api.md": {
-          "blob": "c115851e683fab8a3992e428d21ec45ee03d6915",
+          "blob": "a1ee1339788f9d5f7a2464029a34cc14c013b8c6",
           "target": ".claude/skills/antfu/vite/references/core-plugin-api.md"
         },
         "skills/vite/references/environment-api.md": {
-          "blob": "006ff7fe32db399af353f7a93be368ae0c351b13",
+          "blob": "bbf77adc6fae3c619e3c46fc1d0853830bb26f87",
           "target": ".claude/skills/antfu/vite/references/environment-api.md"
         },
         "skills/vite/references/rolldown-migration.md": {
-          "blob": "28d6d7687c0554123f267544817840e07c11f400",
+          "blob": "de37f69e11bb818fd600f2f811843d8b28344224",
           "target": ".claude/skills/antfu/vite/references/rolldown-migration.md"
         }
       }
