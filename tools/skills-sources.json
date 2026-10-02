@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "4be92ceb4e2d20e6b1fe9662a59b2fff0f4c5b4f",
+      "commit": "bf64de49c843fc52467f80aa0458fc432dedf8c7",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
@@ -84,6 +84,58 @@
         "plugins/dotnet/skills/csharp-refactoring/references/operation-catalog.md": {
           "blob": "340eed23a741c817aff916db52ecc28f292c0a34",
           "target": ".claude/skills/dotnet/csharp-refactoring/references/operation-catalog.md"
+        },
+        "plugins/dotnet/skills/msbuild/SKILL.md": {
+          "blob": "81347bdac90ae3972889b2ea7e495ffc172fd3e8",
+          "target": ".claude/skills/dotnet/msbuild/SKILL.md"
+        },
+        "plugins/dotnet/skills/msbuild/references/antipatterns/additional-antipatterns.md": {
+          "blob": "46c9dbe89f629b388044cf376f3ae1780264f889",
+          "target": ".claude/skills/dotnet/msbuild/references/antipatterns/additional-antipatterns.md"
+        },
+        "plugins/dotnet/skills/msbuild/references/antipatterns/incremental-build-inputs-outputs.md": {
+          "blob": "940f36fcd5f04067aa85e42de840881dfa1d5681",
+          "target": ".claude/skills/dotnet/msbuild/references/antipatterns/incremental-build-inputs-outputs.md"
+        },
+        "plugins/dotnet/skills/msbuild/references/antipatterns/private-assets.md": {
+          "blob": "23c6c38416403b07961605c08a42dfecd3e2eab6",
+          "target": ".claude/skills/dotnet/msbuild/references/antipatterns/private-assets.md"
+        },
+        "plugins/dotnet/skills/msbuild/references/binlog-failure-analysis.md": {
+          "blob": "5f92c0595ce01a7d853d4dca37062e3941df135e",
+          "target": ".claude/skills/dotnet/msbuild/references/binlog-failure-analysis.md"
+        },
+        "plugins/dotnet/skills/msbuild/references/binlog-generation.md": {
+          "blob": "9948f53c96ada01c33b4abee7ec9b983691323a2",
+          "target": ".claude/skills/dotnet/msbuild/references/binlog-generation.md"
+        },
+        "plugins/dotnet/skills/msbuild/references/build-perf-baseline.md": {
+          "blob": "58bdb77937901db79ef360b76b06ca5503e67e3a",
+          "target": ".claude/skills/dotnet/msbuild/references/build-perf-baseline.md"
+        },
+        "plugins/dotnet/skills/msbuild/references/build-perf-diagnostics.md": {
+          "blob": "96eaf244283224d5c81b04db5f1a8a3e7fa717ac",
+          "target": ".claude/skills/dotnet/msbuild/references/build-perf-diagnostics.md"
+        },
+        "plugins/dotnet/skills/msbuild/references/copy-to-output-directory.md": {
+          "blob": "f148e003ca6b0ba4b5f5680e99960c41b170d945",
+          "target": ".claude/skills/dotnet/msbuild/references/copy-to-output-directory.md"
+        },
+        "plugins/dotnet/skills/msbuild/references/eval-performance.md": {
+          "blob": "ac683b56005250fcd532db333c910eff1c314fd5",
+          "target": ".claude/skills/dotnet/msbuild/references/eval-performance.md"
+        },
+        "plugins/dotnet/skills/msbuild/references/extension-points.md": {
+          "blob": "7171732ff4b3b18c175ad812a1169f0e9cb539d7",
+          "target": ".claude/skills/dotnet/msbuild/references/extension-points.md"
+        },
+        "plugins/dotnet/skills/msbuild/references/incremental-build.md": {
+          "blob": "60264230ba5c736d01b2c0ff9e706ca6b47ddcdb",
+          "target": ".claude/skills/dotnet/msbuild/references/incremental-build.md"
+        },
+        "plugins/dotnet/skills/msbuild/references/msbuild-antipatterns.md": {
+          "blob": "23fd3ec81bfd7272c066eed8c1ba5d3a5e8562f1",
+          "target": ".claude/skills/dotnet/msbuild/references/msbuild-antipatterns.md"
         },
         "plugins/dotnet/skills/setup-local-sdk/SKILL.md": {
           "blob": "60f585d7776cac9084a8aa6985d314c6efd03999",
