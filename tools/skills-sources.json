@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "bf64de49c843fc52467f80aa0458fc432dedf8c7",
+      "commit": "e87c5da26cbf0f8c701e91247c4817df0adc12f7",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
@@ -78,7 +78,7 @@
           "target": ".claude/skills/dotnet-template-engine/template-validation/SKILL.md"
         },
         "plugins/dotnet/skills/csharp-refactoring/SKILL.md": {
-          "blob": "2be351105ef2f8b4cfdc1446d16d234bcc5cc5df",
+          "blob": "e383626307341fabed40f255056c27dff6f9faf1",
           "target": ".claude/skills/dotnet/csharp-refactoring/SKILL.md"
         },
         "plugins/dotnet/skills/csharp-refactoring/references/operation-catalog.md": {
