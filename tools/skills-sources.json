@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "0608d8924cd3173411e36650a7a01b4063e1f55a",
+      "commit": "3d38ac343faf65054f7e8d45ca06925273e867e2",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
@@ -76,6 +76,14 @@
         "plugins/dotnet-template-engine/skills/template-validation/SKILL.md": {
           "blob": "ffeb2201364d71cbb3990d6a91999d90eee2cc03",
           "target": ".claude/skills/dotnet-template-engine/template-validation/SKILL.md"
+        },
+        "plugins/dotnet/skills/csharp-expert/SKILL.md": {
+          "blob": "fd0fed9df490cc0fb47cd989d578353e0d247553",
+          "target": ".claude/skills/dotnet/csharp-expert/SKILL.md"
+        },
+        "plugins/dotnet/skills/csharp-expert/references/dotnet-skills-marketplace.md": {
+          "blob": "5a737332210acf3723426ce6fe4a4e698a691b8a",
+          "target": ".claude/skills/dotnet/csharp-expert/references/dotnet-skills-marketplace.md"
         },
         "plugins/dotnet/skills/csharp-refactoring/SKILL.md": {
           "blob": "e383626307341fabed40f255056c27dff6f9faf1",
@@ -163,7 +171,7 @@
     },
     "antfu/skills": {
       "ref": "main",
-      "commit": "e53a142a2420e8cd812cfe9ed0484ab01bc856aa",
+      "commit": "feb0f3aba6566426f12230e7fc7a10d97c1293bb",
       "files": {
         "skills/vite/GENERATION.md": {
           "blob": "747d8981055d1ad6c6ca4e8bcec4696c1e66fcc1",
