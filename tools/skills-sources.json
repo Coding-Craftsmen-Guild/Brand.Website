@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "fbada88709c854e3ea74fb1b34dd237dea13d413",
+      "commit": "a6bf43ab61967c30919334986515163ab24d7635",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
@@ -171,7 +171,7 @@
     },
     "antfu/skills": {
       "ref": "main",
-      "commit": "feb0f3aba6566426f12230e7fc7a10d97c1293bb",
+      "commit": "8886fe2d385d3644cbb47e46ae9cb1cf09307d3b",
       "files": {
         "skills/vite/GENERATION.md": {
           "blob": "747d8981055d1ad6c6ca4e8bcec4696c1e66fcc1",
