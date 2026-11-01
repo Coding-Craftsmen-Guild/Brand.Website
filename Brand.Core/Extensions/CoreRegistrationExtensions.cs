@@ -1,4 +1,5 @@
 using Brand.Core.Localization;
+using Brand.Core.Media;
 using Brand.Core.Notifications;
 using Brand.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,8 @@ public static class CoreRegistrationExtensions
             sp.GetRequiredService<DictionaryStringLocalizer>()
         );
         builder.Services.AddSingleton<ILocalizer, Localizer>();
+
+        WebpImageUrlGenerator.Register(builder.Services);
 
         // Route DataAnnotations text ([Display(Name)], ErrorMessage) through the
         // dictionary-backed factory. AddDataAnnotationsLocalization registers the
