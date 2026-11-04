@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "95e7d0cb7994d47b5789baa68e13f7a2f348b956",
+      "commit": "9837da685079d576feb27f9dd4f87631d3d94107",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
@@ -78,7 +78,7 @@
           "target": ".claude/skills/dotnet-template-engine/template-validation/SKILL.md"
         },
         "plugins/dotnet/skills/csharp-expert/SKILL.md": {
-          "blob": "fd0fed9df490cc0fb47cd989d578353e0d247553",
+          "blob": "4d07b162ea46098bc6f761ca0a6ac2d43402dcb8",
           "target": ".claude/skills/dotnet/csharp-expert/SKILL.md"
         },
         "plugins/dotnet/skills/csharp-expert/references/dotnet-skills-marketplace.md": {
@@ -86,12 +86,32 @@
           "target": ".claude/skills/dotnet/csharp-expert/references/dotnet-skills-marketplace.md"
         },
         "plugins/dotnet/skills/csharp-refactoring/SKILL.md": {
-          "blob": "e383626307341fabed40f255056c27dff6f9faf1",
+          "blob": "35fed1bc91198f5376022d215ad372755dbabe01",
           "target": ".claude/skills/dotnet/csharp-refactoring/SKILL.md"
         },
         "plugins/dotnet/skills/csharp-refactoring/references/operation-catalog.md": {
           "blob": "340eed23a741c817aff916db52ecc28f292c0a34",
           "target": ".claude/skills/dotnet/csharp-refactoring/references/operation-catalog.md"
+        },
+        "plugins/dotnet/skills/dotnet-breaking-changes/SKILL.md": {
+          "blob": "ee31f494c59231fb20f1f16b3eaddae27348c607",
+          "target": ".claude/skills/dotnet/dotnet-breaking-changes/SKILL.md"
+        },
+        "plugins/dotnet/skills/dotnet-breaking-changes/references/internals-visible-to.md": {
+          "blob": "c9e18eb2fe8b343b164c63d5c351228b87902b45",
+          "target": ".claude/skills/dotnet/dotnet-breaking-changes/references/internals-visible-to.md"
+        },
+        "plugins/dotnet/skills/dotnet-breaking-changes/references/multi-targeting.md": {
+          "blob": "46569874a2309556c44b84b057c0a8a149f5fbb7",
+          "target": ".claude/skills/dotnet/dotnet-breaking-changes/references/multi-targeting.md"
+        },
+        "plugins/dotnet/skills/dotnet-breaking-changes/references/public-api.md": {
+          "blob": "2c5f62aab003b97319da7ed957689473730fb0cb",
+          "target": ".claude/skills/dotnet/dotnet-breaking-changes/references/public-api.md"
+        },
+        "plugins/dotnet/skills/dotnet-breaking-changes/references/source-generation.md": {
+          "blob": "d5b5c45b8f1530035d27db498c6b598aaa659cf0",
+          "target": ".claude/skills/dotnet/dotnet-breaking-changes/references/source-generation.md"
         },
         "plugins/dotnet/skills/msbuild/SKILL.md": {
           "blob": "81347bdac90ae3972889b2ea7e495ffc172fd3e8",
