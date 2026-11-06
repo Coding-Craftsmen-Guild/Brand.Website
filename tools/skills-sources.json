@@ -47,7 +47,7 @@
   "lock": {
     "dotnet/skills": {
       "ref": "main",
-      "commit": "edfa9901d782c5b8987a8545f160fc2ef1523758",
+      "commit": "26a06585630870595c4fba50e313621989f58fc7",
       "files": {
         "plugins/dotnet-template-engine/agents/template-engine.agent.md": {
           "blob": "9fcbd905c350b4863b3984a8350edb5d36e19ae2",
@@ -114,11 +114,11 @@
           "target": ".claude/skills/dotnet/dotnet-breaking-changes/references/source-generation.md"
         },
         "plugins/dotnet/skills/msbuild/SKILL.md": {
-          "blob": "81347bdac90ae3972889b2ea7e495ffc172fd3e8",
+          "blob": "f08087610805ae643a223e8081cf1346d230cc95",
           "target": ".claude/skills/dotnet/msbuild/SKILL.md"
         },
         "plugins/dotnet/skills/msbuild/references/antipatterns/additional-antipatterns.md": {
-          "blob": "46c9dbe89f629b388044cf376f3ae1780264f889",
+          "blob": "e0020d3d7d72ea128265fd76cc05e604cd9e2fd3",
           "target": ".claude/skills/dotnet/msbuild/references/antipatterns/additional-antipatterns.md"
         },
         "plugins/dotnet/skills/msbuild/references/antipatterns/incremental-build-inputs-outputs.md": {
@@ -138,7 +138,7 @@
           "target": ".claude/skills/dotnet/msbuild/references/binlog-generation.md"
         },
         "plugins/dotnet/skills/msbuild/references/build-perf-baseline.md": {
-          "blob": "58bdb77937901db79ef360b76b06ca5503e67e3a",
+          "blob": "17b8a165b1fc12c42f4054383b5d2e8bfa898bea",
           "target": ".claude/skills/dotnet/msbuild/references/build-perf-baseline.md"
         },
         "plugins/dotnet/skills/msbuild/references/build-perf-diagnostics.md": {
@@ -154,15 +154,15 @@
           "target": ".claude/skills/dotnet/msbuild/references/eval-performance.md"
         },
         "plugins/dotnet/skills/msbuild/references/extension-points.md": {
-          "blob": "7171732ff4b3b18c175ad812a1169f0e9cb539d7",
+          "blob": "307fa8c992764d35b314b2695595889c252def3d",
           "target": ".claude/skills/dotnet/msbuild/references/extension-points.md"
         },
         "plugins/dotnet/skills/msbuild/references/incremental-build.md": {
-          "blob": "60264230ba5c736d01b2c0ff9e706ca6b47ddcdb",
+          "blob": "bce8b940a2acf152686e1a56e46d927fa8aaba91",
           "target": ".claude/skills/dotnet/msbuild/references/incremental-build.md"
         },
         "plugins/dotnet/skills/msbuild/references/msbuild-antipatterns.md": {
-          "blob": "23fd3ec81bfd7272c066eed8c1ba5d3a5e8562f1",
+          "blob": "70a92bcd4621b2a7888045cd376d9576007ec4af",
           "target": ".claude/skills/dotnet/msbuild/references/msbuild-antipatterns.md"
         },
         "plugins/dotnet/skills/setup-local-sdk/SKILL.md": {
@@ -173,7 +173,7 @@
     },
     "wshobson/agents": {
       "ref": "main",
-      "commit": "7e2fb559cf4b824b27f1fec49fe88f7511066d26",
+      "commit": "4bde3168b43c0655c4d00ea2726e631719908a6d",
       "files": {
         "plugins/frontend-mobile-development/skills/tailwind-design-system/SKILL.md": {
           "blob": "17c4fd0ec99c26254e58288b7219dfe44d0a20ba",
