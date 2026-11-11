@@ -191,7 +191,7 @@
     },
     "antfu/skills": {
       "ref": "main",
-      "commit": "2b26163650610e2bd32261bef68b4093312cc6ff",
+      "commit": "d524ed287eef22757297827ce42e3cad88abd20c",
       "files": {
         "skills/vite/GENERATION.md": {
           "blob": "35a6a0b4b37099313450cf46a448dced09e75e96",
